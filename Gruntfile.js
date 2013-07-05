@@ -1,29 +1,8 @@
 module.exports = function(grunt) {
-
-	// Project configuration.
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		jshint: {
-			options: {
-				asi: true,
-				curly: true,
-				eqeqeq: true,
-				immed: true,
-				latedef: true,
-				newcap: true,
-				indent: 4,
-				noarg: true,
-				sub: true,
-				undef: true,
-				boss: true,
-				eqnull: true,
-				node: true
-			},
-			globals: {
-				require: true,
-				module: true,
-				eventSender: true
-			},
+			options: grunt.file.readJSON('.jshintrc'),
 			uses_defaults: ['app/**/*.js', 'Gruntfile.js']
 		},
 
