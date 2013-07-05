@@ -28,7 +28,7 @@ module.exports = function(grunt) {
 		connect: {
 			website: {
 				options: {
-					port: 8000,
+					port: 8001,
 					base: 'test/test-package-source'
 				}
 			}
@@ -60,5 +60,4 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('env', ['connect:website', 'develop:server', 'watch'])
 	grunt.registerTask('node', ['develop:node', 'watch'])
-	//grunt.registerTask('dev', ['connect:website', 'develop:server', 'concurrent:nodeFront', 'watch'])
 }
