@@ -36,7 +36,7 @@ module.exports = function(grunt) {
 
 		develop: {
 			server: {
-				file: '../AsimovDeploy.NodeFront/server.js',
+				file: 'node_modules/asimov-deploy-ui/server.js',
 				nodeArgs: ['--debug']
 			},
 			node: {
