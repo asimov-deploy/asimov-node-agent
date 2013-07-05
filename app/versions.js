@@ -6,8 +6,8 @@ var url = 'http://localhost:8000/'
 var client = restify.createStringClient({ url: url })
 
 module.exports = function(server) {
-	server.get('/versions/:unitName', function(req, res) {
-		client.get('/workers/', function(err, request, response, data) {
+	server.get('/versions/:unit', function(req, res) {
+		client.get('/' + req.params.unit + '/', function(err, request, response, data) {
 			var packages = packageParser(data)
 			console.log('packages', packages)
 			res.json(packages)

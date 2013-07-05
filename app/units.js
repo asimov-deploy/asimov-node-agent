@@ -1,12 +1,12 @@
 module.exports = function(server) {
 	var deployUnits = [ {
-		"name": "website",
-		"version": "1.0.0",
-		"branch": "product",
-		"info": "Hello from node agent",
+		name: 'Website',
+		version: '1.0.0',
+		branch: 'product',
+		info: 'Hello from node agent',
 		actions: [ 'start', 'stop', 'verify' ]
 	}, {
-		name: 'worker',
+		name: 'Workers',
 		version: '1.0.0',
 		branch: 'master',
 		info: 'I work in batches!',
