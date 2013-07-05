@@ -3,7 +3,7 @@ module.exports = function(grunt) {
 		pkg: grunt.file.readJSON('package.json'),
 		jshint: {
 			options: grunt.file.readJSON('.jshintrc'),
-			uses_defaults: ['app/**/*.js', 'Gruntfile.js']
+			uses_defaults: ['app/*.js', 'Gruntfile.js']
 		},
 
 		mochaTest: {
@@ -15,40 +15,32 @@ module.exports = function(grunt) {
 			}
 		},
 
+		develop: {
+			server: {
+				file: 'server.js'
+			}
+		},
+
 		watch: {
 			options: {
 				nospawn: true
 			},
-			mochaTests: {
-				files: ['app/**/*.js', 'test/**/*.js'],
-				tasks: 'mochaTest'
+			tests: {
+				files: ['test/**/*.js'],
+				tasks: ['mochaTest', 'jshint']
+			},
+			js: {
+				files: ['server.js', 'app/*.js'],
+				tasks: ['develop', 'mochaTest', 'jshint']
 			}
 		},
 
+		//Add support for this in the future.
 		connect: {
 			website: {
 				options: {
 					port: 8001,
 					base: 'test/test-package-source'
-				}
-			}
-		},
-
-		develop: {
-			server: {
-				file: 'node_modules/asimov-deploy-ui/server.js',
-				nodeArgs: ['--debug']
-			},
-			node: {
-				file: 'server.js'
-			}
-		},
-
-		concurrent: {
-			nodeFront: {
-				tasks: ['develop:node'],
-				options: {
-					logConcurrentOutput: true
 				}
 			}
 		}
@@ -57,7 +49,5 @@ module.exports = function(grunt) {
 	require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks)
 
 	grunt.registerTask('default', 'jshint', 'mochaTest')
-
-	grunt.registerTask('env', ['connect:website', 'develop:server', 'watch'])
-	grunt.registerTask('node', ['develop:node', 'watch'])
+	grunt.registerTask('dev', ['develop', 'watch'])
 }
