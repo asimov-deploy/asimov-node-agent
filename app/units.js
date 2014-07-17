@@ -1,3 +1,5 @@
+var restify = require('restify')
+var es = require('../app/eventSender')
 module.exports = function(server) {
 	var deployUnits = [ {
 		name: 'Website',

@@ -1,4 +1,9 @@
 var app = require('restify').createServer();
+var restify = require('restify');
+
+app.use(restify.acceptParser(app.acceptable));
+app.use(restify.queryParser());
+app.use(restify.bodyParser());
 
 require('./app/units.js')(app);
 require('./app/versions.js')(app);

@@ -9,6 +9,7 @@ module.exports = {
 			apiKey: 'hej',
 			version: '1.0.0',
 			name: 'NODE-AGENT',
+			group: 'Web',
 			configVersion: '0.0.1',
 			loadbalancerid: 5
 		};
@@ -27,7 +28,17 @@ module.exports = {
 
 		client.post('/agent/log', logs, function() {});
 	},
+	sendagentlog: function(data) {
+		var logs = [{
+			agentName: data.agentName,
+			timestamp: "2012-05-10 10:00:00",
+			time: new Date(),
+			level: "info",
+			message: data.message
+		}];
 
+		client.post('/agent/log', logs, function() {});
+	},
 	sendEvent: function(data) {
 		data.agentName = "NodeAgent";
 
