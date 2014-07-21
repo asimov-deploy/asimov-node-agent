@@ -2,8 +2,8 @@ var stoptask = require("./stoptask");
 var starttask = require("./starttask");
 var factory = {};
 
-factory.start =  starttask;
-factory.stop = stoptask;
+factory.Start =  starttask;
+factory.Stop = stoptask;
 
 module.exports = {
 	getTask: function(name) {

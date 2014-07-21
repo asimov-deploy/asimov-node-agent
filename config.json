@@ -1,0 +1,20 @@
+﻿{
+  "WebPort":  21233,
+  "DataFolder": "Data",
+  "HeartbeatIntervalSeconds": 10,
+  "NodeFrontUrl":    "http://localhost:3333",
+  "environment":  "dev",
+  "ConfigVersion":  10,
+
+  "packagesources": {
+    "testweb":  {
+      "type": "FileSystem",
+      "uri": "file://c:/Asimov/TestWeb"
+    }
+  },
+  "agents": {
+    "test01": {"name": "test01" ,"environment" : "test" },
+    "torkelpc": {"name": "torkelpc" ,"environment" : "dev" },
+    "cl-win8": {"name": "cl-win8" ,"environment" : "puppet"}
+  }
+}

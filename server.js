@@ -1,22 +1,28 @@
 var app = require('restify').createServer();
 var restify = require('restify');
+var _ = require('underscore');
+var AsimovConfig = require('./app/config').Config;
 
+var config = new AsimovConfig();
 app.use(restify.acceptParser(app.acceptable));
 app.use(restify.queryParser());
 app.use(restify.bodyParser());
 
-require('./app/units.js')(app);
+require('./app/units.js')(app, config);
 require('./app/versions.js')(app);
 require('./app/actions.js')(app);
+
 
 app.get('/', function(req, res, err) {
 	res.send({ status: "ok"});
 });
 
-var eventSender = require('./app/eventSender.js');
+var objSender = require('./app/eventSender.js');
+app.eventSender = new objSender(app,config);
+
 setInterval(function() {
-	eventSender.sendHeartBeat();
-	eventSender.sendlog();
+	app.eventSender.sendHeartBeat();
+	app.eventSender.sendlog();
 }, 3000);
 
 

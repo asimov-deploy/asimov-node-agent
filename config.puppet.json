@@ -1,0 +1,20 @@
+{
+  "AgentGroup": "Puppet",
+  "NodeFrontUrl": "http://localhost:3333",
+
+  "units": [
+   {
+         "name": "Puppet Agent",
+         "type": "WindowsService",
+         "servicename": "Puppet",
+         "packageinfo": { "Source": "Builds" },
+         "actions": {
+             "Apply": {
+               "type": "Command",
+               "zippath": "VerifyPackage.verify",
+               "command": "echo Calle"
+            }
+          }
+    }
+  ]
+}
