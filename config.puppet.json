@@ -5,7 +5,8 @@
   "units": [
    {
          "name": "Puppet Agent",
-         "type": "WindowsService",
+         "type": "WindowsPuppetUnit",
+         "hasDeployParameters": true,
          "servicename": "Puppet",
          "packageinfo": { "Source": "Builds" },
          "actions": {

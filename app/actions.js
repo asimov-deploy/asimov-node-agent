@@ -1,34 +1,34 @@
-var restify = require('restify')
-var es = require('../app/eventSender')
-var tasks = require('../app/tasks/tasks')
-
+var restify = require('restify');
 module.exports = function(server) {
 	server.post('/action/{name}', function(req, res, err) {
-		console.log(req.params.name);
-
 		res.send({ status: 'ok' })
 	})
 
 	server.post('/action', function(req, res) {
-		// Make sure name is defined
-	if (req.params.actionName === undefined) {
-  }
 
-  console.log(req.params.actionName);
+		if (req.params.actionName === undefined) {
+			console.log("No action specified!")
+    }
 
-	var action = tasks.getTask(req.body.actionName);
-   
-		var command  = req.body;
-    action.execute(command);
-		
-		es.sendagentlog({
+		try
+		{
+			var unitType = server.config.getUnitType(req.params.unitName).toLowerCase();
+			var deployunit = new server.deployUnits[unitType](server,req.params.unitName);	
+			deployunit.executeAction(req.params.actionName);
+
+			server.eventSender.sendagentlog({
 			eventName: req.body.actionName,
-			unitName: "test",
-			agentName: "NODE-AGENT",
+			unitName: req.params.unitName,
+			agentName: server.agentname,
 			version: "100.0.0.1",
 			branch: "uber",
 			message: "Agent performed action: " + req.body.actionName 
-		})
+		});
+
+		}
+		catch(err) {
+			console.log(err);
+		}
 
 		res.send({ status: 'ok' })
 

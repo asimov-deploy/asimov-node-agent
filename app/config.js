@@ -34,7 +34,6 @@ Config.prototype.getAgent = function() {
 };
 
 Config.prototype.getUnitActions = function(name) {
-	var hostname = os.hostname();
 	var unitActions = [];
 	var unit = _.find(this.units, function(unit) { return unit.name === name; });
 
@@ -49,6 +48,17 @@ Config.prototype.getUnitActions = function(name) {
 
 	return unitActions;
 };
+
+
+Config.prototype.getUnit = function(name) {
+	var unit = _.find(this.units, function(unit) { return unit.name === name ; });
+  return unit;	
+};
+
+  Config.prototype.getUnitType = function(name) {
+  	return this.getUnit(name).type;	
+	};
+
 
 Config.prototype._loadConfigFromFile = function(configOverrides) {
 	var appPath = path.dirname(process.mainModule.filename);

@@ -2,8 +2,15 @@ var app = require('restify').createServer();
 var restify = require('restify');
 var _ = require('underscore');
 var AsimovConfig = require('./app/config').Config;
+var tasks = require('./app/tasks')
+var deployUnits = require('./app/deployunits');
 
 var config = new AsimovConfig();
+app.config = config;
+app.tasks = tasks;
+app.deployUnits = deployUnits;
+app.agentname = config.getAgent().name;
+
 app.use(restify.acceptParser(app.acceptable));
 app.use(restify.queryParser());
 app.use(restify.bodyParser());
@@ -22,7 +29,7 @@ app.eventSender = new objSender(app,config);
 
 setInterval(function() {
 	app.eventSender.sendHeartBeat();
-	app.eventSender.sendlog();
+	//app.eventSender.sendlog();
 }, 3000);
 
 
