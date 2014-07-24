@@ -5,8 +5,7 @@
   "units": [
    {
          "name": "Puppet Agent",
-         "type": "WindowsPuppetUnit",
-         "hasDeployParameters": true,
+         "type": "WindowsService",
          "servicename": "Puppet",
          "packageinfo": { "Source": "Builds" },
          "actions": {
@@ -16,6 +15,19 @@
                "command": "echo Calle"
             }
           }
-    }
+    },
+
+		{
+         "name": "Deploy All",
+         "type": "PowerShell",
+         "servicename": "Puppet",
+         "packageinfo": { "Source": "Builds" },
+         "DeployParameters": {
+                "Tasks":	{ "Type": "Text", "Default": "Deploy-All" },
+								"Password": { "Type": "Password", "Password": "magic secret" }
+            },
+
+			"Script": "echo nodejs"
+     }
   ]
 }

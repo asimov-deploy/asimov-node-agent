@@ -21,20 +21,15 @@ module.exports = function(server, config) {
 	}
 ]
 
-var actionparamter = [{
-            type: 'text',
-            name: 'Name',
-            default: 'YoYoYo'
-         }];
-
-
 	server.get('/units/list', function(req, res) {
 		var deployUnits= [];
 		try
 		{
 			config.units.forEach(function(unit) {
-			console.log(unit.name);
-			deployUnits.push({name: unit.name, hasDeployParameters:true, actions: config.getUnitActions(unit.name), status: "Running"});
+			var currentUnit = server.deployUnits.getUnitByName(unit.type);
+			currentUnit = new currentUnit(server,unit.name);
+			var deployunitInfo =  currentUnit.getDeployUnitInfo();	
+			deployUnits.push(deployunitInfo);
 			});
 		}
 		catch (err)
@@ -45,7 +40,8 @@ var actionparamter = [{
 	});
 
 	server.get('/units/deploy-parameters/:unitName', function(req, res) {
-		res.json(actionparamter);
+		var params = server.config.getDeployParameters(req.params.unitName);
+		res.json(params);
 	});
 
 

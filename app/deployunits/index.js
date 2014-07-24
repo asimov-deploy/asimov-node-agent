@@ -11,6 +11,6 @@ fs.readdirSync(__dirname).forEach(function(file) {
 
 });
 
- exports.getUnitName = function(name) {
-      return this[name];
+ exports.getUnitByName = function(name) {
+      return this[name.toLowerCase() + "unit"];
 };

@@ -3,6 +3,40 @@ var path = require('path');
 var fs = require('fs');
 var os = require("os");
 
+var lowerCache = {};
+
+keysToLower = function (obj)
+{
+    if (typeof(obj) === "string" || typeof(obj) === "number")
+        return obj;
+
+        var l = obj.length;
+    if (l) {
+        l |= 0;
+        var result = [];
+        result.length = l;
+        for (var i = 0; i < l; i++) {
+            var newVal = obj[i];
+            result[i] = typeof(newVal) === "string" ? newVal : keysToLower(newVal);
+        }
+        return result;
+    } else {
+     var ret = {};
+     for (var key in obj) {
+
+         var keyStr = typeof(key) === "string" ? key : String(key);
+         var newKey = lowerCache[keyStr];
+         if (newKey === undefined) {
+             newKey = keyStr.toLowerCase();
+             lowerCache[keyStr] = newKey;
+         }
+
+         var newVal = obj[key];
+         ret[newKey] = typeof(newVal) === "string" ? newVal : keysToLower(newVal);
+     }
+     return ret;
+    }
+};
 
 function Config(configOverrides) {
 		this.agents = [];
@@ -23,40 +57,61 @@ Config.prototype.defaults = {
 
 Config.prototype._applyConfig = function(cfg) {
 
-	Object.keys(cfg).forEach(function(key) {
-            this[key.toLowerCase()] = cfg[key];
-	}.bind(this));
-};
+	var configlowerkeys = keysToLower(cfg);
 
-Config.prototype.getAgent = function() {
-	var hostname = os.hostname();
-	return _.find(this.agents, function(agent) { return agent.name === hostname; });
-};
+	Object.keys(configlowerkeys).forEach(function(key) {
+	            this[key] = configlowerkeys[key];
+		}.bind(this)); 
+	};
 
-Config.prototype.getUnitActions = function(name) {
-	var unitActions = [];
-	var unit = _.find(this.units, function(unit) { return unit.name === name; });
+	Config.prototype.getAgent = function() {
+		var hostname = os.hostname();
+		return _.find(this.agents, function(agent) { return agent.name === hostname; });
+	};
 
-	if( Object.prototype.toString.call( unit.actions ) === '[object Array]' ) {
-    		unit.actions.forEach(function(action) {
-    		unitActions.push(Object.keys(action)[0]);
-			});
-		}
-		else {
-			unitActions.push(Object.keys(unit.actions)[0])
-		}
+	Config.prototype.getUnitActions = function(name) {
+		var unitActions = [];
+		var unit = _.find(this.units, function(unit) { return unit.name === name; });
 
-	return unitActions;
-};
+		if(unit.actions === undefined ) return unitActions;
+
+		if( Object.prototype.toString.call( unit.actions ) === '[object Array]' ) {
+					unit.actions.forEach(function(action) {
+					unitActions.push(Object.keys(action)[0]);
+				});
+			}
+			else {
+				unitActions.push(Object.keys(unit.actions)[0])
+			}
+
+		return unitActions;
+	};
+
+	Config.prototype.getDeployParameters = function(name) {
+			var deployParameters = [];
+			var unit =  this.getUnit(name);
+	     
+			if(unit.deployparameters === undefined ) return deployParameters;
+			
+			Object.keys(unit.deployparameters).forEach(function(key) {
+					var param = unit.deployparameters[key];
+					param.name = key;
+					param.type = param.type.toLowerCase();
+
+					deployParameters.push(param);
+	      });
+				
+			return deployParameters;
+		};
 
 
-Config.prototype.getUnit = function(name) {
-	var unit = _.find(this.units, function(unit) { return unit.name === name ; });
-  return unit;	
-};
+	Config.prototype.getUnit = function(name) {
+			var unit = _.find(this.units, function(unit) { return unit.name === name ; });
+			return unit;	
+	};
 
-  Config.prototype.getUnitType = function(name) {
-  	return this.getUnit(name).type;	
+	Config.prototype.getUnitType = function(name) {
+			return this.getUnit(name).type + "unit";	
 	};
 
 
@@ -78,7 +133,7 @@ Config.prototype._loadConfigFromFile = function(configOverrides) {
 
 	this.agent = this.getAgent();
   var environment = this.agent.environment;
-  if(environment != undefined)
+  if(environment !== undefined)
  {
 	var unitconfigPath = path.join(appPath, 'config.'+environment+'.json');
 	if (fs.existsSync(configPath)) {

@@ -28,7 +28,7 @@ function deployUnitInfoDTO(){
 	this.status =  "NA";
 	this.lastDeployed = "";
 	this.hasDeployParameters = false;
-	this.actions = ["Start", "Stop"];
+	this.actions = [];
 }
 
 function deployedVersionDTO(){
@@ -55,14 +55,32 @@ DeployUnit.prototype._LoadUnitInfo = function() {
 	this._unitinfo = unitinfo;
 }
 
-DeployUnit.prototype.getUnitInfo = function() {
-	var unitinfo = this._config.getUnit(this._name);
-	this._unitinfo = unitinfo;
+DeployUnit.prototype.getDeployUnitInfo = function() {
+	var name = this._name;
+	var unitInfo = this._config.getUnit(name);
+
+  var unitInfoDTO = new deployUnitInfoDTO();
+  unitInfoDTO.name = name;
+  unitInfoDTO.actions.concat(this._config.getUnitActions(name));
+  unitInfoDTO.url= unitInfo.url;
+	if( unitInfo.deployparameters !== undefined && unitInfo.deployparameters.length !== 0){
+			unitInfoDTO.hasDeployParameters = true;
+	}
+
+	return unitInfoDTO;
 }
 
  DeployUnit.prototype.getUnitType =  function() {
   console.log("DeployUnit:" + this._unitinfo.type);
 	return this._unitinfo.type;
+};
+
+DeployUnit.prototype.executeAction = function(name) {
+	console.log('DeployUnit. executeAction'); 
+}
+
+ DeployUnit.prototype.deploy =  function() {
+  console.log("DeployUnit: deploy");
 };
 
 
