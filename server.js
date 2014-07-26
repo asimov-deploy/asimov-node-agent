@@ -29,10 +29,16 @@ app.eventSender = new objSender(app,config);
 
 setInterval(function() {
 	app.eventSender.sendHeartBeat();
-	//app.eventSender.sendlog();
-}, 3000);
+}, 500);
 
 
-var port = 4333
-console.log('Node agent running on: ' + port)
-app.listen(port);
+setInterval(function() {
+	app.eventSender.sendHeartBeat();
+	app.eventSender.sendlog();
+}, 10000);
+
+
+
+console.log('Node agent running on: ' + app.config.port)
+
+app.listen(app.config.port);

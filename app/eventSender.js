@@ -1,15 +1,18 @@
 var restify = require('restify');
-var client = restify.createJsonClient({ url: 'http://localhost:3333' });
 var _config;
+var _nodeFront;
 
    function EnventSender(server, config) {
 	   this._config = config;
+	   this._nodeFront = restify.createJsonClient({ url: config.nodefronturl});
+
    }
 
    EnventSender.prototype.sendHeartBeat =  function() {
+		
 		var heartbeatData = {
-			url: 'http://localhost:4333',
-			apiKey: 'hej',
+			url: this._config.webcontrolurl,
+			apiKey: this._config.apikey,
 			version: '1.0.0',
 			name: this._config.getAgent().name,
 			group: this._config.agentgroup,
@@ -17,19 +20,19 @@ var _config;
 			loadbalancerid: 5
 		};
 
-		client.post('/agent/heartbeat', heartbeatData, function() {});
+		this._nodeFront.post('/agent/heartbeat', heartbeatData, function() {});
 	};
 
 	EnventSender.prototype.sendlog = function() {
 		var logs = [{
 			agentName: this._config.getAgent().name,
-			timestamp: "2012-05-10 10:00:00",
+			timestamp: Date.now(),
 			time: new Date(),
 			level: "info",
-			message: "hello"
+			message: "Ping"
 		}];
 
-		client.post('/agent/log', logs, function() {});
+		this._nodeFront.post('/agent/log', logs, function() {});
 	};
 
 	EnventSender.prototype.sendagentlog = function(data) {
@@ -41,13 +44,13 @@ var _config;
 			message: data.message
 		}];
 
-		client.post('/agent/log', logs, function() {});
+		this._nodeFront.post('/agent/log', logs, function() {});
 	};
 
 	EnventSender.prototype.sendEvent = function(data) {
-		data.agentName = "NodeAgent";
+		data.agentName = this._config.getAgent().name,
 
-		client.post('/agent/event', data, function() {});
+		this._nodeFront.post('/agent/event', data, function() {});
 	};
 
 module.exports =  EnventSender;

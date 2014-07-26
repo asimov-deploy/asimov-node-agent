@@ -39,7 +39,12 @@ module.exports = function(server) {
 
 	server.post('/deploy/deploy', function(req, res) {
 		res.json("ok");
-    console.log(req);
+
+			var unitType = server.config.getUnitType(req.params.unitName).toLowerCase();
+			var deployunit = new server.deployUnits[unitType](server,req.params.unitName);	
+			req.params.actionName = "deploy";
+			deployunit.executeAction(req.params);
+
 		server.eventsender.sendEvent({
 			eventName: "deployStarted",
 			unitName: "Progressive.NET",

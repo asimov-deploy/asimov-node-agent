@@ -1,5 +1,5 @@
 {
-  "AgentGroup": "Puppet",
+  "AgentGroup": "Demo",
   "NodeFrontUrl": "http://localhost:3333",
 
   "units": [
@@ -12,11 +12,16 @@
              "Apply": {
                "type": "Command",
                "zippath": "VerifyPackage.verify",
-               "command": "echo Calle"
+               "command": "echo hello world"
             }
           }
     },
-
+    {
+         "name": "RabbitMQ",
+         "type": "WindowsService",
+         "servicename": "RabbitMQ",
+         "packageinfo": { "Source": "Builds" }
+    },
 		{
          "name": "Deploy All",
          "type": "PowerShell",

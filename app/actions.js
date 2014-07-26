@@ -14,7 +14,7 @@ module.exports = function(server) {
 		{
 			var unitType = server.config.getUnitType(req.params.unitName).toLowerCase();
 			var deployunit = new server.deployUnits[unitType](server,req.params.unitName);	
-			deployunit.executeAction(req.params.actionName);
+			deployunit.executeAction(req.params);
 
 			server.eventSender.sendagentlog({
 			eventName: req.body.actionName,

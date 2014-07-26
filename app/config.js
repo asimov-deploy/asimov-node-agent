@@ -1,13 +1,14 @@
-var _ = require("underscore");
+var _ = require('underscore');
 var path = require('path');
 var fs = require('fs');
-var os = require("os");
+var os = require('os');
+var dns = require('dns');
 
 var lowerCache = {};
 
 keysToLower = function (obj)
 {
-    if (typeof(obj) === "string" || typeof(obj) === "number")
+    if (typeof(obj) === "string" || typeof(obj) === "number" || typeof(obj) === "boolean")
         return obj;
 
         var l = obj.length;
@@ -38,8 +39,11 @@ keysToLower = function (obj)
     }
 };
 
+
+
+
 function Config(configOverrides) {
-		this.agents = [];
+	this.agents = [];
 	this.agent = "";
 	this.units =[];
 	this.agentgroup = "";
@@ -47,16 +51,14 @@ function Config(configOverrides) {
 }
 
 Config.prototype.defaults = {
-	'name':				'Deploy UI',
-	'enable-demo':		false,
-	'port':				process.env.PORT || 3333,
-	'session-secret': 'asdasdad3242352jji3o2hkjo1n2b3',
-	'auth-anonymous':	true,
-	'plugins': []
+	'name':				'Deploy Agent',
+	'port':				process.env.PORT || 4333,
+	'apikey': 'asdasdad3242352jji',
+	'enable-demo': false,
+	'agent-name': 'demo-01'
 };
 
 Config.prototype._applyConfig = function(cfg) {
-
 	var configlowerkeys = keysToLower(cfg);
 
 	Object.keys(configlowerkeys).forEach(function(key) {
@@ -64,8 +66,26 @@ Config.prototype._applyConfig = function(cfg) {
 		}.bind(this)); 
 	};
 
+
+Config.prototype._fqdnlookup = function(callback) {
+	  var result ="";
+	  var ip = os.networkInterfaces().Ethernet[0].address.toString() ;
+		dns.reverse(ip, callback.bind(this) );
+}
+
+Config.prototype._dnsReversCallback = function (err,domains) {
+	  if (err) throw err;
+
+			this["fqdn"] =  domains.toString();
+
+			if (this["enable-demo"] !== true)  this["webcontrolurl"] = "http://" + this["fqdn"] + ":" + this["port"];
+}
+
 	Config.prototype.getAgent = function() {
 		var hostname = os.hostname();
+
+		if (this["enable-demo"] === true) hostname = this["agent-name"];
+		
 		return _.find(this.agents, function(agent) { return agent.name === hostname; });
 	};
 
@@ -86,6 +106,12 @@ Config.prototype._applyConfig = function(cfg) {
 
 		return unitActions;
 	};
+
+Config.prototype._setWebControlUrl = function() {
+			this["webcontrolurl"] = "http://localhost:" + this["port"];
+	};
+
+
 
 	Config.prototype.getDeployParameters = function(name) {
 			var deployParameters = [];
@@ -116,20 +142,27 @@ Config.prototype._applyConfig = function(cfg) {
 
 
 Config.prototype._loadConfigFromFile = function(configOverrides) {
-	var appPath = path.dirname(process.mainModule.filename);
 	
+
+
+	var appPath = path.dirname(process.mainModule.filename);
 	var configPath = path.join(appPath, 'config.json');
-
+	
 	this._applyConfig(this.defaults);
-
+	
 	if (fs.existsSync(configPath)) {
 		var config = require(configPath);
 		this._applyConfig(config);
 	}
-
+	
+	
 	if (configOverrides) {
 		this._applyConfig(configOverrides);
 	}
+ 	this._setWebControlUrl();	
+ 	var that = this;
+
+	that._fqdnlookup(that._dnsReversCallback);
 
 	this.agent = this.getAgent();
   var environment = this.agent.environment;
@@ -140,7 +173,7 @@ Config.prototype._loadConfigFromFile = function(configOverrides) {
 		var unitconfig = require(unitconfigPath);
 		this._applyConfig(unitconfig);
 	}
- }	
+ }
 };
 
 

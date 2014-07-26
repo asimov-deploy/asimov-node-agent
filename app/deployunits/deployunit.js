@@ -40,7 +40,6 @@ function deployedVersionDTO(){
 }
 
 function DeployUnit(server, name) {
-	console.log("ctor : deployunit");    
 	this._config = server.config;
   this._server = server;
   this._name = name;
@@ -75,7 +74,7 @@ DeployUnit.prototype.getDeployUnitInfo = function() {
 	return this._unitinfo.type;
 };
 
-DeployUnit.prototype.executeAction = function(name) {
+DeployUnit.prototype.executeAction = function(params) {
 	console.log('DeployUnit. executeAction'); 
 }
 

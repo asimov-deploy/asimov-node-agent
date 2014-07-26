@@ -3,9 +3,11 @@
   "DataFolder": "Data",
   "HeartbeatIntervalSeconds": 10,
   "NodeFrontUrl":    "http://localhost:3333",
-  "environment":  "dev",
   "ConfigVersion":  10,
-
+	"port": 4333,
+	"apiKey": "adssaer32t24f23423",
+	"enable-demo": true,
+	"demo-agent-name": "demo-01",
   "packagesources": {
     "testweb":  {
       "type": "FileSystem",
@@ -13,8 +15,6 @@
     }
   },
   "agents": {
-    "test01": {"name": "test01" ,"environment" : "test" },
-    "torkelpc": {"name": "torkelpc" ,"environment" : "dev" },
-    "cl-win8": {"name": "cl-win8" ,"environment" : "puppet"}
+    "demo": {"name": "demo-1" ,"environment" : "demo" }
   }
 }
