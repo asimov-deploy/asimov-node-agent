@@ -60,7 +60,7 @@ DeployUnit.prototype.getDeployUnitInfo = function() {
 
   var unitInfoDTO = new deployUnitInfoDTO();
   unitInfoDTO.name = name;
-  unitInfoDTO.actions.concat(this._config.getUnitActions(name));
+  unitInfoDTO.actions = this._config.getUnitActions(name);
   unitInfoDTO.url= unitInfo.url;
 	if( unitInfo.deployparameters !== undefined && unitInfo.deployparameters.length !== 0){
 			unitInfoDTO.hasDeployParameters = true;

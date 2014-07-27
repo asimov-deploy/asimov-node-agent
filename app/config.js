@@ -6,8 +6,8 @@ var dns = require('dns');
 
 var lowerCache = {};
 
-keysToLower = function (obj)
-{
+keysToLower = function (obj){
+
     if (typeof(obj) === "string" || typeof(obj) === "number" || typeof(obj) === "boolean")
         return obj;
 
@@ -55,96 +55,93 @@ Config.prototype.defaults = {
 	'port':				process.env.PORT || 4333,
 	'apikey': 'asdasdad3242352jji',
 	'enable-demo': false,
-	'agent-name': 'demo-01'
+	'demo-agent-name': 'demo-01'
 };
 
 Config.prototype._applyConfig = function(cfg) {
-	var configlowerkeys = keysToLower(cfg);
+var configlowerkeys = keysToLower(cfg);
 
-	Object.keys(configlowerkeys).forEach(function(key) {
-	            this[key] = configlowerkeys[key];
-		}.bind(this)); 
-	};
-
+Object.keys(configlowerkeys).forEach(function(key) {
+            this[key] = configlowerkeys[key];
+	}.bind(this)); 
+};
 
 Config.prototype._fqdnlookup = function(callback) {
-	  var result ="";
-	  var ip = os.networkInterfaces().Ethernet[0].address.toString() ;
+		var ip = os.networkInterfaces().Ethernet[0].address.toString() ;
 		dns.reverse(ip, callback.bind(this) );
 }
 
+
 Config.prototype._dnsReversCallback = function (err,domains) {
-	  if (err) throw err;
+	if (err) throw err;
 
-			this["fqdn"] =  domains.toString();
+	this["fqdn"] =  domains.toString();
 
-			if (this["enable-demo"] !== true)  this["webcontrolurl"] = "http://" + this["fqdn"] + ":" + this["port"];
+	if (this["enable-demo"] !== true ) this["webcontrolurl"] = "http://" + this["fqdn"] + ":" + this["port"];
 }
 
-	Config.prototype.getAgent = function() {
-		var hostname = os.hostname();
+Config.prototype.getAgent = function() {
+	var hostname = os.hostname();
 
-		if (this["enable-demo"] === true) hostname = this["agent-name"];
-		
-		return _.find(this.agents, function(agent) { return agent.name === hostname; });
-	};
+	if (this["enable-demo"] === true) hostname = this["demo-agent-name"];
 
-	Config.prototype.getUnitActions = function(name) {
-		var unitActions = [];
-		var unit = _.find(this.units, function(unit) { return unit.name === name; });
+	this.agent = _.find(this.agents, function(agent) { return agent.name === hostname; });
 
-		if(unit.actions === undefined ) return unitActions;
+	return this.agent;
+}
 
-		if( Object.prototype.toString.call( unit.actions ) === '[object Array]' ) {
-					unit.actions.forEach(function(action) {
-					unitActions.push(Object.keys(action)[0]);
-				});
-			}
-			else {
-				unitActions.push(Object.keys(unit.actions)[0])
-			}
+Config.prototype.capitalizeString = function( capitalizeString ){
+	var capitalized = capitalizeString.charAt(0).toUpperCase() + capitalizeString.substring(1);
+	return capitalized;
+}
 
-		return unitActions;
-	};
+Config.prototype.getUnitActions = function(name) {
+	var unitActions = [];
+	var unit = _.find(this.units, function(unit) { return unit.name === name; });
+
+	if(unit.actions === undefined ) return unitActions;
+  
+	_.keys(unit.actions).forEach(function(key) {
+			unitActions.push(this.capitalizeString(key));
+	}.bind(this));
+
+	return unitActions;
+};
+
 
 Config.prototype._setWebControlUrl = function() {
 			this["webcontrolurl"] = "http://localhost:" + this["port"];
 	};
 
+Config.prototype.getDeployParameters = function(name) {
+		var deployParameters = [];
+		var unit =  this.getUnit(name);
+     
+		if(unit.deployparameters === undefined ) return deployParameters;
+		
+		Object.keys(unit.deployparameters).forEach(function(key) {
+				var param = unit.deployparameters[key];
+				param.name = key;
+				param.type = param.type.toLowerCase();
 
-
-	Config.prototype.getDeployParameters = function(name) {
-			var deployParameters = [];
-			var unit =  this.getUnit(name);
-	     
-			if(unit.deployparameters === undefined ) return deployParameters;
+				deployParameters.push(param);
+      });
 			
-			Object.keys(unit.deployparameters).forEach(function(key) {
-					var param = unit.deployparameters[key];
-					param.name = key;
-					param.type = param.type.toLowerCase();
-
-					deployParameters.push(param);
-	      });
-				
-			return deployParameters;
-		};
-
-
-	Config.prototype.getUnit = function(name) {
-			var unit = _.find(this.units, function(unit) { return unit.name === name ; });
-			return unit;	
+		return deployParameters;
 	};
 
-	Config.prototype.getUnitType = function(name) {
-			return this.getUnit(name).type + "unit";	
-	};
+
+Config.prototype.getUnit = function(name) {
+		var unit = _.find(this.units, function(unit) { return unit.name === name ; });
+		return unit;	
+};
+
+Config.prototype.getUnitType = function(name) {
+		return this.getUnit(name).type + "unit";	
+};
 
 
 Config.prototype._loadConfigFromFile = function(configOverrides) {
-	
-
-
 	var appPath = path.dirname(process.mainModule.filename);
 	var configPath = path.join(appPath, 'config.json');
 	
@@ -154,25 +151,23 @@ Config.prototype._loadConfigFromFile = function(configOverrides) {
 		var config = require(configPath);
 		this._applyConfig(config);
 	}
-	
-	
+		
 	if (configOverrides) {
 		this._applyConfig(configOverrides);
 	}
  	this._setWebControlUrl();	
- 	var that = this;
+ 
+	this._fqdnlookup(this._dnsReversCallback);
 
-	that._fqdnlookup(that._dnsReversCallback);
+	this.agent = this.getAgent.bind(this)();
 
-	this.agent = this.getAgent();
   var environment = this.agent.environment;
-  if(environment !== undefined)
- {
-	var unitconfigPath = path.join(appPath, 'config.'+environment+'.json');
-	if (fs.existsSync(configPath)) {
-		var unitconfig = require(unitconfigPath);
-		this._applyConfig(unitconfig);
-	}
+  if(environment !== undefined){
+		var unitconfigPath = path.join(appPath, 'config.'+environment+'.json');
+		if (fs.existsSync(configPath)) {
+			var unitconfig = require(unitconfigPath);
+			this._applyConfig(unitconfig);
+		}
  }
 };
 

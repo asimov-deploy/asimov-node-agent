@@ -15,6 +15,6 @@
     }
   },
   "agents": {
-    "demo": {"name": "demo-1" ,"environment" : "demo" }
+    "demo-01": {"name": "demo-01" ,"environment" : "demo" }
   }
 }

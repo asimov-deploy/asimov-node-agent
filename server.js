@@ -11,6 +11,22 @@ app.tasks = tasks;
 app.deployUnits = deployUnits;
 app.agentname = config.getAgent().name;
 
+function checkAPIkey (req, res, next) {
+  
+   if (req.method === 'POST') { 
+     if(req.headers.authorization !== app.config.apikey)
+     {
+			console.log("Not correct key!");
+			//console.log("apikey from nodefront: "  + req.headers.authorization);
+			//console.log("my agent apikey: " + app.config.apikey);
+			res.send(401);
+     }
+   }
+   next()
+}
+
+app.use(checkAPIkey.bind(this));
+
 app.use(restify.acceptParser(app.acceptable));
 app.use(restify.queryParser());
 app.use(restify.bodyParser());
