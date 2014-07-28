@@ -29,7 +29,7 @@
 		{
          "name": "Deploy All",
          "type": "PowerShell",
-         "servicename": "Puppet",
+         "ServiceName": "Puppet",
          "packageinfo": { "Source": "Builds" },
          "DeployParameters": {
                 "Tasks":	{ "Type": "Text", "Default": "Deploy-All" },
@@ -37,6 +37,23 @@
             },
 
 			"Script": "echo nodejs"
-     }
+     },
+     {
+         "name": "Linux Puppet Agent",
+         "type": "LinuxProcess",
+         "ProcessName": "Puppet",
+         "packageinfo": { "Source": "Builds" },
+         "actions": {
+             "Apply": {
+               "type": "Command",
+               "zippath": "VerifyPackage.verify",
+               "command": "echo hello world"
+            },
+            "Echo": {
+               "type": "Command",
+               "command": "echo hello world"
+            }
+          }
+    }
   ]
 }

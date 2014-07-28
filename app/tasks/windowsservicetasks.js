@@ -11,23 +11,23 @@ var executePSCommand = function(commandToExecute){
 	};
 
 module.exports = {
-  start: function(deployUnit, command) {
+  start: function(command) {
 	  console.log("Start windows service : " + command.unitName);
-  	var commandToExecute = 'powershell.exe -Command "(get-service -Name ' + command.unitName + ').Stop()"';
+  	var commandToExecute = 'powershell.exe -Command "(get-service -Name ' + command.serviceName + ').Start()"';
   	executePSCommand(commandToExecute);	
   },
-  stop: function(deployUnit, command) {
+  stop: function(command) {
   	console.log("Stop windows service : " + command.unitName);
-  	var commandToExecute = 'powershell.exe -Command "(get-service -Name ' + command.unitName + ').Stop()"';
+  	var commandToExecute = 'powershell.exe -Command "(get-service -Name ' + command.serviceName + ').Stop()"';
 		executePSCommand(commandToExecute);
 	},
-	apply: function(deployUnit, command) {
+	apply: function(command) {
 	  console.log("Apply puppet : " + command.actionName);
 	  var commandToExecute = 'powershell.exe -Command puppet agent -t"';
 	  executePSCommand(commandToExecute);
 	},
-	command: function(deployUnit, command) {
-	  console.log("Execute command : " + command.actionName + " - " + deployUnit._name);
+	command: function(command) {
+	  console.log("Execute command : " + command.actionName + " - " + command.unitName);
 		var commandToExecute = util.format('powershell.exe -Command %s', command.command);
 	  executePSCommand(commandToExecute);
 	},

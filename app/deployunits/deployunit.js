@@ -46,12 +46,18 @@ function DeployUnit(server, name) {
   this._deployStatus = DeployStatus;
 	this._unitStatus   = UnitStatus;
 	this._deployunitinfo = new deployUnitInfoDTO();
-	this._LoadUnitInfo()
+	this._actions = {};
+	this._defaultActions = [];
+	this._serviceName = "";
+	this._LoadUnitInfo();
  }
 
 DeployUnit.prototype._LoadUnitInfo = function() {
 	var unitinfo = this._config.getUnit(this._name);
 	this._unitinfo = unitinfo;
+	if(this._unitinfo.type.toLowerCase() === "windowsservice") this._serviceName = this._unitinfo.servicename;
+	if(this._unitinfo.type.toLowerCase() === "linuxprocess") this._serviceName = this._unitinfo.processname.toLowerCase();
+
 }
 
 DeployUnit.prototype.getDeployUnitInfo = function() {
@@ -65,6 +71,12 @@ DeployUnit.prototype.getDeployUnitInfo = function() {
 	if( unitInfo.deployparameters !== undefined && unitInfo.deployparameters.length !== 0){
 			unitInfoDTO.hasDeployParameters = true;
 	}
+	if (unitInfoDTO.actions.length === 0){
+		unitInfoDTO.actions = this.defaultActions;
+  } 
+  else{
+		unitInfoDTO.actions = _.union(this.defaultActions, unitInfoDTO.actions );
+  }
 
 	return unitInfoDTO;
 }
@@ -76,6 +88,30 @@ DeployUnit.prototype.getDeployUnitInfo = function() {
 
 DeployUnit.prototype.executeAction = function(params) {
 	console.log('DeployUnit. executeAction'); 
+	var paramsAction = params.actionName.toLowerCase();
+	var action = function(){};
+
+	if(_.contains(_.keys(this._actions) , paramsAction) )
+	{
+		action =  this._actions[paramsAction];
+		params.serviceName = this._serviceName;
+		params.unitName = this._name;
+		action(params);
+	}
+	else{
+		var customActions = this._config.getUnitActions(this._name);
+		if( _.contains( customActions , this._config.capitalizeString(paramsAction)))
+		{
+			var customAction = this._unitinfo.actions[paramsAction];
+			if(_.contains(_.keys(this._actions) , customAction.type.toLowerCase()))
+			{
+				action =  this._actions[customAction.type.toLowerCase()];
+				customAction.actionName = paramsAction;
+				customAction.unitName = this._name;
+				action(customAction);
+			}
+		}
+	}
 }
 
  DeployUnit.prototype.deploy =  function() {
