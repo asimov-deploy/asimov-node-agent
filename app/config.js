@@ -67,8 +67,15 @@ Object.keys(configlowerkeys).forEach(function(key) {
 };
 
 Config.prototype._fqdnlookup = function(callback) {
-		var ip = os.networkInterfaces().Ethernet[0].address.toString() ;
-		dns.reverse(ip, callback.bind(this) );
+	var ip ="";
+	if(os.platform() === "linux"){
+		 ip = os.networkInterfaces().eth0[0].address.toString();
+	}
+	else{
+		ip = os.networkInterfaces().Ethernet[0].address.toString() ;		
+	}
+	this["ip"] = ip;
+	dns.reverse(ip, callback.bind(this));
 }
 
 
@@ -77,7 +84,7 @@ Config.prototype._dnsReversCallback = function (err,domains) {
 
 	this["fqdn"] =  domains.toString();
 
-	if (this["enable-demo"] !== true ) this["webcontrolurl"] = "http://" + this["fqdn"] + ":" + this["port"];
+	if (this["enable-demo"] !== true ) this["webcontrolurl"] = "http://" + this["ip"] + ":" + this["port"];
 }
 
 Config.prototype.getAgent = function() {

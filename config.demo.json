@@ -45,7 +45,7 @@
          "packageinfo": { "Source": "Builds" },
          "actions": {
              "Apply": {
-               "type": "Command",
+               "type": "LongRunningCommand",
                "zippath": "VerifyPackage.verify",
                "command": "echo hello world"
             },

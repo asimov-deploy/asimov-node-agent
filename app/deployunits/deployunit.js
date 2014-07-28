@@ -108,6 +108,7 @@ DeployUnit.prototype.executeAction = function(params) {
 				action =  this._actions[customAction.type.toLowerCase()];
 				customAction.actionName = paramsAction;
 				customAction.unitName = this._name;
+				customAction.server = this._server;
 				action(customAction);
 			}
 		}

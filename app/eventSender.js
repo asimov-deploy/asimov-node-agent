@@ -40,10 +40,11 @@ var _nodeFront;
 			agentName: data.agentName,
 			timestamp: Date.now(),
 			time: new Date(),
-			level: "info",
+			level: data.level,
 			message: data.message
 		}];
-
+		console.log(logs);
+		
 		this._nodeFront.post('/agent/log', logs, function() {});
 	};
 
