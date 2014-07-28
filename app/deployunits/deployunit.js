@@ -95,6 +95,7 @@ DeployUnit.prototype.executeAction = function(params) {
 	{
 		action =  this._actions[paramsAction];
 		params.serviceName = this._serviceName;
+		params.server = this._server;
 		params.unitName = this._name;
 		action(params);
 	}

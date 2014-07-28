@@ -3,13 +3,13 @@ var exec = require('child_process').exec;
 var util = require('util');
 var shell = require('shelljs');
 
-	function executeShellCommand(commandToExecute,server) {
+function executeShellCommand(commandToExecute,server) {
 	console.log(commandToExecute);
 	var child = exec(commandToExecute, function (error, stdout, stderr) {
 		sys.print('stdout: ' + stdout);
 		var message = {
-			agentName: 'hubba',
-			level: 'warn',
+			agentName: server.config.getAgent().name,
+			level: 'info',
 			message: stdout
 		};
 		server.eventSender.sendagentlog(message);
@@ -19,9 +19,9 @@ var shell = require('shelljs');
 			console.log('exec error: ' + error);
 		}
 	})
-	};
+};
 
-	function executeLongRunningShellCommand(commandToExecute,server) {
+function executeLongRunningShellCommand(commandToExecute,server) {
 	console.log("executeLongRunningShellCommand :" + commandToExecute);
 	var message = {
 			agentName: server.config.getAgent().name,
