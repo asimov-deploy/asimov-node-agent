@@ -3,13 +3,13 @@ var exec = require('child_process').exec;
 var util = require('util');
 var shell = require('shelljs');
 
-function executeShellCommand(commandToExecute,server) {
+function executeShellCommand(commandToExecute,server, callback) {
 	console.log(commandToExecute);
 	var child = exec(commandToExecute, function (error, stdout, stderr) {
 		sys.print('stdout: ' + stdout);
 		var message = {
 			agentName: server.config.getAgent().name,
-			level: 'info',
+			level: "info",
 			message: stdout
 		};
 		server.eventSender.sendagentlog(message);
@@ -18,6 +18,7 @@ function executeShellCommand(commandToExecute,server) {
 		if (error !== null) {
 			console.log('exec error: ' + error);
 		}
+		if (typeof(callback) == "function") callback(stdout);
 	})
 };
 
@@ -25,7 +26,7 @@ function executeLongRunningShellCommand(commandToExecute,server) {
 	console.log("executeLongRunningShellCommand :" + commandToExecute);
 	var message = {
 			agentName: server.config.getAgent().name,
-			level: 'info',
+			level: "info",
 			message: "message"
 		};
 
@@ -61,6 +62,12 @@ var LinuxProcessTasks = function() {
   	executeShellCommand(commandToExecute,command.server);
 	};
 	
+  LinuxProcessTasks.prototype.status =  function (command, callback) {
+  	console.log("Start task : " + command.actionName);
+  	var commandToExecute = util.format('service --status-all |& grep %s |& grep  -Po "[\\+\\-\\?]"', command.serviceName);
+  	executeShellCommand(commandToExecute,command.server, callback);
+	};
+
 	LinuxProcessTasks.prototype.command =  function (command) {
 		console.log("Execute task : " + command.actionName);
 		var commandToExecute = command.command;

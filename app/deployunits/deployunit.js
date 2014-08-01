@@ -49,8 +49,13 @@ function DeployUnit(server, name) {
 	this._actions = {};
 	this._defaultActions = [];
 	this._serviceName = "";
+	this._requriredPlatform ="";
 	this._LoadUnitInfo();
  }
+
+
+ //process.platform#
+//What platform you're running on: 'darwin', 'freebsd', 'linux', 'sunos' or 'win32'
 
 DeployUnit.prototype._LoadUnitInfo = function() {
 	var unitinfo = this._config.getUnit(this._name);
@@ -71,12 +76,16 @@ DeployUnit.prototype.getDeployUnitInfo = function() {
 	if( unitInfo.deployparameters !== undefined && unitInfo.deployparameters.length !== 0){
 			unitInfoDTO.hasDeployParameters = true;
 	}
-	if (unitInfoDTO.actions.length === 0){
-		unitInfoDTO.actions = this.defaultActions;
-  } 
-  else{
-		unitInfoDTO.actions = _.union(this.defaultActions, unitInfoDTO.actions );
-  }
+
+
+	if (typeof this.defaultActions != 'undefined'){
+		if(unitInfoDTO.actions.length === 0 ) {
+			unitInfoDTO.actions = this.defaultActions;
+		} 
+		else{
+			unitInfoDTO.actions = _.union(this.defaultActions, unitInfoDTO.actions );
+		}
+	}
 
 	return unitInfoDTO;
 }

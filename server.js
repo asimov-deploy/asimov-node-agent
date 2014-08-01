@@ -53,6 +53,9 @@ setInterval(function() {
 	app.eventSender.sendlog();
 }, 10000);
 
+process.on('uncaughtException', function (err) {
+	console.log('Caught process exception: ' + err);
+});
 
 
 console.log('Node agent running on: ' + app.config.port)

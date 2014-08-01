@@ -2,6 +2,7 @@ var util = require("util");
 var deployunit = require("./deployunit");
 var PowerShellUnit = function(server, name) {
     PowerShellUnit.super_.call(this,server, name); // call deployunit's constructor
+    this._requriredPlatform ="win32";
     this._loadTasks();
 };
 
@@ -11,12 +12,14 @@ PowerShellUnit.prototype.executeAction = function(name) {
 	action.execute(name);
 }
 
-PowerShellUnit.prototype.getDeployUnitInfo = function() {
-		return PowerShellUnit.super._getDeployUnitInfo.call(this); 
-	}
-
 //Add properties that should overide deployunit after this row
 util.inherits(PowerShellUnit, deployunit);
+
+PowerShellUnit.prototype.getDeployUnitInfo = function(callback) {
+	var deployUnitInfo =  PowerShellUnit.super_.prototype.getDeployUnitInfo.call(this); 
+	return (callback(deployUnitInfo)); 
+}
+
 
  PowerShellUnit.prototype._loadTasks =  function(name) {
 		this._actions = {};

@@ -3,7 +3,20 @@
   "NodeFrontUrl": "http://localhost:3333",
 
   "units": [
-   {
+   
+    {
+         "name": "Deploy All",
+         "type": "PowerShell",
+         "ServiceName": "Puppet",
+         "packageinfo": { "Source": "Builds" },
+         "DeployParameters": {
+                "Tasks":	{ "Type": "Text", "Default": "Deploy-All" },
+								"Password": { "Type": "Password", "Password": "magic secret" }
+            },
+
+			"Script": "echo nodejs"
+     },
+     {
          "name": "Puppet Agent",
          "type": "WindowsService",
          "servicename": "Puppet",
@@ -26,18 +39,6 @@
          "servicename": "RabbitMQ",
          "packageinfo": { "Source": "Builds" }
     },
-		{
-         "name": "Deploy All",
-         "type": "PowerShell",
-         "ServiceName": "Puppet",
-         "packageinfo": { "Source": "Builds" },
-         "DeployParameters": {
-                "Tasks":	{ "Type": "Text", "Default": "Deploy-All" },
-								"Password": { "Type": "Password", "Password": "magic secret" }
-            },
-
-			"Script": "echo nodejs"
-     },
      {
          "name": "Linux Puppet Agent",
          "type": "LinuxProcess",
@@ -54,6 +55,6 @@
                "command": "echo hello world"
             }
           }
-    }
+    } 
   ]
 }
