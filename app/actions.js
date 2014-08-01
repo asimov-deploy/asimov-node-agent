@@ -20,6 +20,7 @@ module.exports = function(server) {
 			eventName: req.body.actionName,
 			unitName: req.params.unitName,
 			agentName: server.agentname,
+			level: "info",
 			version: "100.0.0.1",
 			branch: "uber",
 			message: "Agent performed action: " + req.body.actionName 

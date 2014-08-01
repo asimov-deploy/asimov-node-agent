@@ -37,7 +37,7 @@ var _nodeFront;
 
 	EnventSender.prototype.sendagentlog = function(data) {
 		var logs = [{
-			agentName: data.agentName,
+			agentName: this._config.getAgent().name,
 			timestamp: Date.now(),
 			time: new Date(),
 			level: data.level,

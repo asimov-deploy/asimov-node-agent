@@ -1,4 +1,7 @@
 var _ = require("underscore");
+var events = require('events');
+var util = require('util');
+
 var _deployunitinfo;
 var _server;
 var _unitinfo;
@@ -40,6 +43,7 @@ function deployedVersionDTO(){
 }
 
 function DeployUnit(server, name) {
+	events.EventEmitter.call(this);
 	this._config = server.config;
   this._server = server;
   this._name = name;
@@ -54,6 +58,7 @@ function DeployUnit(server, name) {
  }
 
 
+DeployUnit.prototype.__proto__ = events.EventEmitter.prototype;
  //process.platform#
 //What platform you're running on: 'darwin', 'freebsd', 'linux', 'sunos' or 'win32'
 
