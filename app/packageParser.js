@@ -7,7 +7,7 @@ function isAnyParameterMissing(groups) {
 module.exports = function(pname) {
 	var match = null
 	var groups = []
-	while(match = packagePattern.exec(pname)) {
+	while( (match = packagePattern.exec(pname))) {
 		groups.push(match)
 	}
 

@@ -9,9 +9,11 @@ module.exports = function(grunt) {
 		mochaTest: {
 			test: {
 				options: {
+					ui:'bdd',
 					resporter: 'spec'
 				},
-				src: ['test/**/*.js']
+				files: ['test/*.js'],
+				src: ['test/*.js']
 			}
 		},
 
@@ -22,12 +24,10 @@ module.exports = function(grunt) {
 		},
 
 		watch: {
-			options: {
-				nospawn: true
-			},
 			tests: {
-				files: ['test/**/*.js'],
-				tasks: ['mochaTest', 'jshint']
+				src: ['test/*.js'],
+				files: ['test/*.js'], //, 'jshint'
+				tasks: ['mochaTest']
 			},
 			js: {
 				files: ['server.js', 'app/*.js'],

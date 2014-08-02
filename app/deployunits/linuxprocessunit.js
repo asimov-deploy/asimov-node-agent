@@ -28,8 +28,8 @@ LinuxProcessUnit.prototype.getDeployUnitInfo = function(callback) {
 	this._actions.status(command,  function(status){
 			deployUnitInfo.status = status;
 			callback(deployUnitInfo)	
-			});
- }
+	});
+}
 
  LinuxProcessUnit.prototype._loadTasks =  function(server) {
 		var Tasks =	server.tasks.linuxprocesstasks;

@@ -3,9 +3,8 @@ var _config;
 var _nodeFront;
 
    function EnventSender(server, config) {
-	   this._config = config;
-	   this._nodeFront = restify.createJsonClient({ url: config.nodefronturl});
-
+			this._config = config;
+			this._nodeFront = restify.createJsonClient({ url: config.nodefronturl});
    }
 
    EnventSender.prototype.sendHeartBeat =  function() {

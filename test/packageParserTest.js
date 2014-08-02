@@ -14,5 +14,6 @@ describe('Packageparser', function() {
 		var p = require('../app/packageParser.js')('v1.2.3.4-[production][cdfeg].zip')
 
 		assert.equal(null, p)
-	});
+	})
+
 });

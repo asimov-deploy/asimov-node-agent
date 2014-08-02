@@ -32,8 +32,8 @@ keysToLower = function (obj){
              lowerCache[keyStr] = newKey;
          }
 
-         var newVal = obj[key];
-         ret[newKey] = typeof(newVal) === "string" ? newVal : keysToLower(newVal);
+         var newValue = obj[key];
+         ret[newKey] = typeof(newValue) === "string" ? newValue : keysToLower(newValue);
      }
      return ret;
     }
@@ -47,6 +47,9 @@ function Config(configOverrides) {
 	this.agent = "";
 	this.units =[];
 	this.agentgroup = "";
+	this.appPath = path.dirname(process.mainModule.filename);
+	if(configOverrides !==  undefined  && configOverrides.appPath !==  undefined) this.appPath  = configOverrides.appPath;
+	
 	this._loadConfigFromFile(configOverrides);
 }
 
@@ -69,12 +72,12 @@ Object.keys(configlowerkeys).forEach(function(key) {
 Config.prototype._fqdnlookup = function(callback) {
 	var ip ="";
 	if(os.platform() === "linux"){
-		 ip = os.networkInterfaces().eth0[0].address.toString();
+		ip = os.networkInterfaces().eth0[0].address.toString();
 	}
 	else{
 		ip = os.networkInterfaces().Ethernet[0].address.toString() ;		
 	}
-	this["ip"] = ip;
+	this.ip = ip;
 	dns.reverse(ip, callback.bind(this));
 }
 
@@ -82,9 +85,9 @@ Config.prototype._fqdnlookup = function(callback) {
 Config.prototype._dnsReversCallback = function (err,domains) {
 	if (err) throw err;
 
-	this["fqdn"] =  domains.toString();
+	this.fqdn =  domains.toString();
 
-	if (this["enable-demo"] !== true ) this["webcontrolurl"] = "http://" + this["ip"] + ":" + this["port"];
+	if (this["enable-demo"] !== true ) this.webcontrolurl = "http://" + this.ip + ":" + this.port;
 }
 
 Config.prototype.getAgent = function() {
@@ -117,7 +120,7 @@ Config.prototype.getUnitActions = function(name) {
 
 
 Config.prototype._setWebControlUrl = function() {
-			this["webcontrolurl"] = "http://localhost:" + this["port"];
+			this.webcontrolurl = "http://localhost:" + this.port;
 	};
 
 Config.prototype.getDeployParameters = function(name) {
@@ -149,8 +152,7 @@ Config.prototype.getUnitType = function(name) {
 
 
 Config.prototype._loadConfigFromFile = function(configOverrides) {
-	var appPath = path.dirname(process.mainModule.filename);
-	var configPath = path.join(appPath, 'config.json');
+	var configPath = path.join(this.appPath, 'config.json');
 	
 	this._applyConfig(this.defaults);
 	
@@ -162,7 +164,8 @@ Config.prototype._loadConfigFromFile = function(configOverrides) {
 	if (configOverrides) {
 		this._applyConfig(configOverrides);
 	}
- 	this._setWebControlUrl();	
+	
+	this._setWebControlUrl();	
  
 	this._fqdnlookup(this._dnsReversCallback);
 
@@ -170,7 +173,7 @@ Config.prototype._loadConfigFromFile = function(configOverrides) {
 
   var environment = this.agent.environment;
   if(environment !== undefined){
-		var unitconfigPath = path.join(appPath, 'config.'+environment+'.json');
+		var unitconfigPath = path.join(this.appPath, 'config.'+environment+'.json');
 		if (fs.existsSync(configPath)) {
 			var unitconfig = require(unitconfigPath);
 			this._applyConfig(unitconfig);

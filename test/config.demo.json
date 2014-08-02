@@ -1,0 +1,60 @@
+{
+  "AgentGroup": "Demo",
+  "NodeFrontUrl": "http://localhost:3333",
+
+  "units": [
+   
+    {
+         "name": "Deploy All",
+         "type": "PowerShell",
+         "ServiceName": "Puppet",
+         "packageinfo": { "Source": "Builds" },
+         "DeployParameters": {
+                "Tasks":	{ "Type": "Text", "Default": "Deploy-All" },
+								"Password": { "Type": "Password", "Password": "magic secret" }
+            },
+
+			"Script": "echo nodejs"
+     },
+     {
+         "name": "Puppet Agent",
+         "type": "WindowsService",
+         "servicename": "Puppet",
+         "packageinfo": { "Source": "Builds" },
+         "actions": {
+             "Apply": {
+               "type": "Command",
+               "zippath": "VerifyPackage.verify",
+               "command": "echo hello world"
+            },
+            "Echo": {
+               "type": "Command",
+               "command": "echo hello world"
+            }
+          }
+    },
+    {
+         "name": "RabbitMQ",
+         "type": "WindowsService",
+         "servicename": "RabbitMQ",
+         "packageinfo": { "Source": "Builds" }
+    },
+     {
+         "name": "Linux Puppet Agent",
+         "type": "LinuxProcess",
+         "ProcessName": "Puppet",
+         "packageinfo": { "Source": "Builds" },
+         "actions": {
+             "Apply": {
+               "type": "LongRunningCommand",
+               "zippath": "VerifyPackage.verify",
+               "command": "echo hello world"
+            },
+            "Echo": {
+               "type": "Command",
+               "command": "echo hello world"
+            }
+          }
+    } 
+  ]
+}

@@ -1,0 +1,20 @@
+﻿{
+  "WebPort":  21233,
+  "DataFolder": "Data",
+  "HeartbeatIntervalSeconds": 10,
+  "NodeFrontUrl":    "http://localhost:3333",
+  "ConfigVersion":  10,
+	"port": 4333,
+	"apiKey": "adssaer32t24f23423",
+	"enable-demo": true,
+	"demo-agent-name": "demo-01",
+  "packagesources": {
+    "testweb":  {
+      "type": "FileSystem",
+      "uri": "file://c:/Asimov/TestWeb"
+    }
+  },
+  "agents": {
+    "demo-01": {"name": "demo-01" ,"environment" : "demo" }
+  }
+}	
