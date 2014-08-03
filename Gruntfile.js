@@ -5,14 +5,11 @@ module.exports = function(grunt) {
 			options: grunt.file.readJSON('.jshintrc'),
 			uses_defaults: ['app/*.js', 'Gruntfile.js']
 		},
-
 		mochaTest: {
 			test: {
 				options: {
-					ui:'bdd',
-					resporter: 'spec'
+					reporter: 'spec', ui:'bdd'
 				},
-				files: ['test/*.js'],
 				src: ['test/*.js']
 			}
 		},

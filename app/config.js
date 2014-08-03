@@ -47,6 +47,7 @@ function Config(configOverrides) {
 	this.agent = "";
 	this.units =[];
 	this.agentgroup = "";
+	this.agentname = "";
 	this.appPath = path.dirname(process.mainModule.filename);
 	if(configOverrides !==  undefined  && configOverrides.appPath !==  undefined) this.appPath  = configOverrides.appPath;
 	
@@ -170,6 +171,7 @@ Config.prototype._loadConfigFromFile = function(configOverrides) {
 	this._fqdnlookup(this._dnsReversCallback);
 
 	this.agent = this.getAgent.bind(this)();
+	this.agentname = this.agent.name;
 
   var environment = this.agent.environment;
   if(environment !== undefined){

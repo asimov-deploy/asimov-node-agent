@@ -1,20 +1,25 @@
 var restify = require('restify');
-var _config;
 var _nodeFront;
-
-   function EnventSender(server, config) {
-			this._config = config;
-			this._nodeFront = restify.createJsonClient({ url: config.nodefronturl});
+var _agentName;
+var _webcontrolurl;
+var _agentGroup;
+var _apiKey;
+   function EnventSender(nodefronturl, webcontrolurl, agentName, agentGroup, apiKey) {
+			this._agentName = agentName;
+			this._webcontrolurl = webcontrolurl;
+			this._agentGroup = agentGroup;
+			this._apiKey = apiKey;
+			this._nodeFront = restify.createJsonClient({ url: nodefronturl});
    }
 
    EnventSender.prototype.sendHeartBeat =  function() {
 		
 		var heartbeatData = {
-			url: this._config.webcontrolurl,
-			apiKey: this._config.apikey,
+			url: this._webcontrolurl,
+			apiKey: this._apiKey,
 			version: '1.0.0',
-			name: this._config.getAgent().name,
-			group: this._config.agentgroup,
+			name: this._agentName,
+			group: this._agentGroup,
 			configVersion: '0.0.1',
 			loadbalancerid: 5
 		};
@@ -24,7 +29,7 @@ var _nodeFront;
 
 	EnventSender.prototype.sendlog = function() {
 		var logs = [{
-			agentName: this._config.getAgent().name,
+			agentName: this._agentName,
 			timestamp: Date.now(),
 			time: new Date(),
 			level: "info",
@@ -36,7 +41,7 @@ var _nodeFront;
 
 	EnventSender.prototype.sendagentlog = function(data) {
 		var logs = [{
-			agentName: this._config.getAgent().name,
+			agentName: this._agentName,
 			timestamp: Date.now(),
 			time: new Date(),
 			level: data.level,
@@ -48,7 +53,7 @@ var _nodeFront;
 	};
 
 	EnventSender.prototype.sendEvent = function(data) {
-		data.agentName = this._config.getAgent().name,
+		data.agentName = this._agentName,
 
 		this._nodeFront.post('/agent/event', data, function() {});
 	};

@@ -100,6 +100,8 @@ DeployUnit.prototype.getDeployUnitInfo = function() {
 	return this._unitinfo.type;
 };
 
+DeployUnit.prototype.getStatusText = function(text) {};
+
 DeployUnit.prototype.executeAction = function(params) {
 	console.log('DeployUnit. executeAction'); 
 	var paramsAction = params.actionName.toLowerCase();

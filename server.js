@@ -9,7 +9,7 @@ var config = new AsimovConfig();
 app.config = config;
 app.tasks = tasks;
 app.deployUnits = deployUnits;
-app.agentname = config.getAgent().name;
+app.agentname = config.agentname;
 
 function checkAPIkey (req, res, next) {
   
@@ -41,7 +41,7 @@ app.get('/', function(req, res, err) {
 });
 
 var objSender = require('./app/eventSender.js');
-app.eventSender = new objSender(app,config);
+app.eventSender = new objSender(config.nodefronturl, config.webcontrolurl, config.agentname, config.agentgroup, config.apikey);
 
 setInterval(function() {
 	app.eventSender.sendHeartBeat();
@@ -52,6 +52,10 @@ setInterval(function() {
 	app.eventSender.sendHeartBeat();
 	app.eventSender.sendlog();
 }, 10000);
+
+app.on("error", function(err) {
+		console.log('ERROR:', err);
+});
 
 process.on('uncaughtException', function (err) {
 	console.log('Caught process exception: ' + err);

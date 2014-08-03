@@ -7,6 +7,7 @@ function executePSCommand(commandToExecute,server, callback ){
 	console.log("Command to execute: " + commandToExecute);
 
   exec(commandToExecute,{maxBuffer: 500*1024},function(err, stdout, stderr) {
+  		if(err) console.log(err +  stderr);
 			if (typeof(callback) == "function") callback(stdout);
     }).stdin.end();
 	}
