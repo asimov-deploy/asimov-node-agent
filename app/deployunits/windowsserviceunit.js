@@ -15,7 +15,6 @@ var WindowsServiceUnit = function(server, name) {
     var _statusChangedHandler = function(data){
 				var statusText = this.getStatusText(data.status);
 				this._server.eventSender.sendagentlog({"level": "info", "message": statusText});
-
 				var evt = new unitStatusChangedEvent(this._name, statusText);
 				this._server.eventSender.sendEvent(evt);
 		};
@@ -33,12 +32,11 @@ WindowsServiceUnit.prototype.executeAction = function(params) {
 
 WindowsServiceUnit.prototype.getStatusText = function(text) {
 			var statusText ="NA";
-			if(text.indexOf("Running") != -1) statusText = "Running";
-			if(text.indexOf("Stopped") != -1) statusText = "Stopped";
-			if(text.indexOf("Starting") != -1) statusText = "Starting";
-			if(text.indexOf("Stopping") != -1) statusText = "Stopping";
-			if(text.indexOf("StopPending") != -1) statusText = "Stopped";
-
+			if(text.indexOf("Running") != -1)			statusText = "Running";
+			if(text.indexOf("Stopped") != -1)			statusText = "Stopped";
+			if(text.indexOf("Starting") != -1)		statusText = "Starting";
+			if(text.indexOf("Stopping") != -1)		statusText = "Stopping";
+			if(text.indexOf("StopPending") != -1)	statusText = "Stopped";
 			return statusText;
  };
 
