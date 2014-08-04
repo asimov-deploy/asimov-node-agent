@@ -36,7 +36,7 @@ function executeLongRunningShellCommand(commandToExecute,server) {
 }
 
 var LinuxProcessTasks = function() {
-		events.EventEmitter.call(this);events.EventEmitter.call(this);
+		events.EventEmitter.call(this);
     this.executeShellCommand =  executeShellCommand;
     this.executeLongRunningShellCommand =  executeLongRunningShellCommand;
 };

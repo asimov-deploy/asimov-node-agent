@@ -57,11 +57,15 @@ app.on("error", function(err) {
 		console.log('ERROR:', err);
 });
 
+console.log('Node agent running on: ' + app.config.port)
+
+app.listen(app.config.port);
+
+server.on("error", function(err) {
+		console.log('ERROR:', err);
+});
+
 process.on('uncaughtException', function (err) {
 	console.log('Caught process exception: ' + err);
 });
 
-
-console.log('Node agent running on: ' + app.config.port)
-
-app.listen(app.config.port);

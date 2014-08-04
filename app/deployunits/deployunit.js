@@ -67,7 +67,7 @@ DeployUnit.prototype._LoadUnitInfo = function() {
 	this._unitinfo = unitinfo;
 	if(this._unitinfo.type.toLowerCase() === "windowsservice") this._serviceName = this._unitinfo.servicename;
 	if(this._unitinfo.type.toLowerCase() === "linuxprocess") this._serviceName = this._unitinfo.processname.toLowerCase();
-
+	if(this._unitinfo.type.toLowerCase() === "linuxupstart") this._serviceName = this._unitinfo.processname.toLowerCase();
 }
 
 DeployUnit.prototype.getDeployUnitInfo = function() {
