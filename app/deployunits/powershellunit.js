@@ -3,6 +3,7 @@ var deployunit = require("./deployunit");
 var PowerShellUnit = function(server, name) {
     PowerShellUnit.super_.call(this,server, name); // call deployunit's constructor
     this._requriredPlatform ="win32";
+    this._hasStatus = false;
     this._loadTasks();
 };
 
@@ -11,15 +12,8 @@ PowerShellUnit.prototype.executeAction = function(name) {
 	var action =  this._actions[name.toLowerCase()];
 	action.execute(name);
 }
-
 //Add properties that should overide deployunit after this row
 util.inherits(PowerShellUnit, deployunit);
-
-PowerShellUnit.prototype.getDeployUnitInfo = function(callback) {
-	var deployUnitInfo =  PowerShellUnit.super_.prototype.getDeployUnitInfo.call(this); 
-	return (callback(deployUnitInfo)); 
-}
-
 
  PowerShellUnit.prototype._loadTasks =  function(name) {
 		this._actions = {};
@@ -29,5 +23,4 @@ PowerShellUnit.prototype.getDeployUnitInfo = function(callback) {
 		this._actions.Apply = this._server.tasks.windowsserviceapplytask; */
  }
 
- 
 module.exports =  PowerShellUnit;

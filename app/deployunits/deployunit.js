@@ -68,9 +68,11 @@ DeployUnit.prototype._LoadUnitInfo = function() {
 	if(this._unitinfo.type.toLowerCase() === "windowsservice") this._serviceName = this._unitinfo.servicename;
 	if(this._unitinfo.type.toLowerCase() === "linuxprocess") this._serviceName = this._unitinfo.processname.toLowerCase();
 	if(this._unitinfo.type.toLowerCase() === "linuxupstart") this._serviceName = this._unitinfo.processname.toLowerCase();
+	this._hasStatus = true;
+
 }
 
-DeployUnit.prototype.getDeployUnitInfo = function() {
+DeployUnit.prototype.getDeployUnitInfo = function(callback) {
 	var name = this._name;
 	var unitInfo = this._config.getUnit(name);
 
@@ -92,7 +94,19 @@ DeployUnit.prototype.getDeployUnitInfo = function() {
 		}
 	}
 
-	return unitInfoDTO;
+	if(this._requriredPlatform !== process.platform || !this._hasStatus) return (callback(unitInfoDTO));
+
+	var command = {
+			server: this._server,
+			serviceName: this._serviceName,
+			actionName: "Status"
+	};
+
+	this._actions.status(command,  function(status){
+			var statusText = this.getStatusText(status);
+			unitInfoDTO.status = statusText;
+			callback(unitInfoDTO);
+			}.bind(this));
 }
 
  DeployUnit.prototype.getUnitType =  function() {

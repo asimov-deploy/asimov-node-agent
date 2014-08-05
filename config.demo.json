@@ -56,6 +56,11 @@
                "command": "echo hello world"
             }
           }
+    },
+    { 
+      "name": "Asimov agent",
+      "type":"LinuxUpstart",
+      "ProcessName": "asimovagent"
     }  
   ]
 }

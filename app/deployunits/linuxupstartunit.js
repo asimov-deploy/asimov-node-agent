@@ -21,7 +21,6 @@ var LinuxUpstartUnit = function(server, name) {
 	
 		this.on('statusChanged', _statusChangedHandler);
 };
-
 //Add properties that should overide deployunit after this row
 util.inherits(LinuxUpstartUnit, deployunit);
 
@@ -39,21 +38,6 @@ LinuxUpstartUnit.prototype.getStatusText = function(text) {
 			return statusText;
  };
 
-LinuxUpstartUnit.prototype.getDeployUnitInfo = function(callback) {
-	var deployUnitInfo =  LinuxUpstartUnit.super_.prototype.getDeployUnitInfo.call(this); 
-	if(this._requriredPlatform !== process.platform) return (callback( deployUnitInfo));
-
-	var command = {};
-	command.server = this._server;
-	command.serviceName = this._serviceName;
-	command.actionName = "Status";
-	this._actions.status(command,  function(status){
-			if(err) callback(err, deployUnitInfo)	
-			var statusText = this.getStatusText(status);
-			deployUnitInfo.status = statusText;
-			callback(deployUnitInfo)	;
-	}.bind(this));
-}
  LinuxUpstartUnit.prototype._loadTasks =  function() {
 		this._actions.start =  this._Tasks.start.bind(this);
 		this._actions.stop = this._Tasks.stop.bind(this);

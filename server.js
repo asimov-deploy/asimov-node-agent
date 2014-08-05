@@ -53,15 +53,12 @@ setInterval(function() {
 	app.eventSender.sendlog();
 }, 10000);
 
-app.on("error", function(err) {
-		console.log('ERROR:', err);
-});
-
 console.log('Node agent running on: ' + app.config.port)
 
 app.listen(app.config.port);
 
-server.on("error", function(err) {
+
+app.on("error", function(err) {
 		console.log('ERROR:', err);
 });
 

@@ -38,21 +38,6 @@ LinuxProcessUnit.prototype.getStatusText = function(text) {
 			return statusText;
  };
 
-LinuxProcessUnit.prototype.getDeployUnitInfo = function(callback) {
-	var deployUnitInfo =  LinuxProcessUnit.super_.prototype.getDeployUnitInfo.call(this); 
-	if(this._requriredPlatform !== process.platform) return (callback(deployUnitInfo));
-
-	var command = {};
-	command.server = this._server;
-	command.serviceName = this._serviceName;
-	command.actionName = "Status";
-	this._actions.status(command,  function(status){
-			var statusText = this.getStatusText(status);
-			deployUnitInfo.status = statusText;
-			callback(deployUnitInfo)	
-	}.bind(this));
-}
-
  LinuxProcessUnit.prototype._loadTasks =  function() {
 		this._actions.start =  this._Tasks.start.bind(this);
 		this._actions.stop = this._Tasks.stop.bind(this);
