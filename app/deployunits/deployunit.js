@@ -1,45 +1,21 @@
 var _ = require("underscore");
 var events = require('events');
 var util = require('util');
-
+Models = require('../models');
 var _deployunitinfo;
 var _server;
 var _unitinfo;
-var _deployStatus;
-var _unitStatus;
 
-var DeployStatus = {
-  NA : {value: 0, name: "NA"},
-  Deploying: {value: 1, name: "Deploying"},
-  DeployFailed : {value: 2, name: "DeployFailed"}
-};
-
-var UnitStatus = {
-  NA : {value: 0, name: "NA"},
-  NotFound: {value: 1, name: "NotFound"},
-  Running: {value: 2, name: "Running"},
-  Stopped : {value: 3, name: "Stopped"},
-  Stopping : {value: 4, name: "Stopping"},
-  Starting : {value: 5, name: "Starting"}
-};
-
-function deployUnitInfoDTO(){
-	this.name=  "";
-	this.url= "";
-	this.version = "";
-	this.branch = "";
-	this.status =  "NA";
-	this.lastDeployed = "";
-	this.hasDeployParameters = false;
-	this.actions = [];
-}
-
-function deployedVersionDTO(){
-	this.versionNumber= "";
-	this.versionTimestamp = "";
-	this.versionCommit = "";
-	this.versionBranch = "";
-	this.deployedTimestamp = "";
+function combineActions(defaultActions, unitActions)
+{
+		if (typeof defaultActions != 'undefined'){
+			if(unitActions.length === 0 ) {
+				return defaultActions;
+			} 
+		else{
+			return  _.union(defaultActions, unitActions);
+		}
+	}
 }
 
 function DeployUnit(server, name) {
@@ -47,9 +23,7 @@ function DeployUnit(server, name) {
 	this._config = server.config;
   this._server = server;
   this._name = name;
-  this._deployStatus = DeployStatus;
-	this._unitStatus   = UnitStatus;
-	this._deployunitinfo = new deployUnitInfoDTO();
+	this._deployunitinfo = new Models.deployunitinfodto();
 	this._actions = {};
 	this._defaultActions = [];
 	this._serviceName = "";
@@ -57,10 +31,7 @@ function DeployUnit(server, name) {
 	this._LoadUnitInfo();
  }
 
-
 DeployUnit.prototype.__proto__ = events.EventEmitter.prototype;
- //process.platform#
-//What platform you're running on: 'darwin', 'freebsd', 'linux', 'sunos' or 'win32'
 
 DeployUnit.prototype._LoadUnitInfo = function() {
 	var unitinfo = this._config.getUnit(this._name);
@@ -76,7 +47,7 @@ DeployUnit.prototype.getDeployUnitInfo = function(callback) {
 	var name = this._name;
 	var unitInfo = this._config.getUnit(name);
 
-  var unitInfoDTO = new deployUnitInfoDTO();
+  var unitInfoDTO = new Models.deployunitinfodto();
   unitInfoDTO.name = name;
   unitInfoDTO.actions = this._config.getUnitActions(name);
   unitInfoDTO.url= unitInfo.url;
@@ -84,16 +55,8 @@ DeployUnit.prototype.getDeployUnitInfo = function(callback) {
 			unitInfoDTO.hasDeployParameters = true;
 	}
 
-
-	if (typeof this.defaultActions != 'undefined'){
-		if(unitInfoDTO.actions.length === 0 ) {
-			unitInfoDTO.actions = this.defaultActions;
-		} 
-		else{
-			unitInfoDTO.actions = _.union(this.defaultActions, unitInfoDTO.actions );
-		}
-	}
-
+	unitInfoDTO.actions = combineActions(this.defaultActions, unitInfoDTO.actions );
+	
 	if(this._requriredPlatform !== process.platform || !this._hasStatus) return (callback(unitInfoDTO));
 
 	var command = {

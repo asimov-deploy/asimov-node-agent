@@ -21,7 +21,6 @@
 
       "Script": "echo nodejs"
      },
-    
      {
          "name": "Puppet Agent",
          "type": "WindowsService",
@@ -39,7 +38,6 @@
             }
           }
     },
-    
     {
          "name": "Linux Puppet Agent",
          "type": "LinuxProcess",

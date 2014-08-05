@@ -3,18 +3,23 @@
   "NodeFrontUrl": "http://localhost:3333",
 
   "units": [
-   
-    {
+      {
+         "name": "RabbitMQ",
+         "type": "WindowsService",
+         "servicename": "RabbitMQ",
+         "packageinfo": { "Source": "Builds" }
+    } ,
+     {
          "name": "Deploy All",
          "type": "PowerShell",
          "ServiceName": "Puppet",
          "packageinfo": { "Source": "Builds" },
          "DeployParameters": {
-                "Tasks":	{ "Type": "Text", "Default": "Deploy-All" },
-								"Password": { "Type": "Password", "Password": "magic secret" }
+                "Tasks":  { "Type": "Text", "Default": "Deploy-All" },
+                "Password": { "Type": "Password", "Password": "magic secret" }
             },
 
-			"Script": "echo nodejs"
+      "Script": "echo nodejs"
      },
      {
          "name": "Puppet Agent",
@@ -34,12 +39,6 @@
           }
     },
     {
-         "name": "RabbitMQ",
-         "type": "WindowsService",
-         "servicename": "RabbitMQ",
-         "packageinfo": { "Source": "Builds" }
-    },
-     {
          "name": "Linux Puppet Agent",
          "type": "LinuxProcess",
          "ProcessName": "Puppet",
@@ -56,7 +55,10 @@
             }
           }
     },
-
-     
+    { 
+      "name": "Asimov agent",
+      "type":"LinuxUpstart",
+      "ProcessName": "asimovagent"
+    }  
   ]
 }

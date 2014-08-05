@@ -5,7 +5,6 @@ var unitStatusChangedEvent = require('../events/unitstatuschangedevent');
 
 var LinuxUpstartUnit = function(server, name) {
     LinuxUpstartUnit.super_.call(this,server, name); // call deployunit's constructor
-    console.log("Inside Upstart Unit!")
     this._requriredPlatform ="linux";
     this.defaultActions = ["Start", "Stop", "Restart"];
     var Tasks =	server.tasks.linuxupstarttasks;

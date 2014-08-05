@@ -1,6 +1,8 @@
 var assert = require('assert')
-var configOverrides = {};
-configOverrides.appPath = __dirname;
+var configOverrides = {
+	appPath: __dirname	
+};
+
 var AsimovConfig ;
 var config;
 
@@ -12,7 +14,6 @@ describe('Config', function() {
 
 	describe('Loading', function() {
 		it('Can load config', function(){
-			
 			assert.equal("demo",config.agentgroup.toLowerCase());
 			assert.equal("Deploy Agent",config.name);
 		})

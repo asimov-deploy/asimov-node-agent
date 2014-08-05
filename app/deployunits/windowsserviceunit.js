@@ -11,7 +11,6 @@ var WindowsServiceUnit = function(server, name) {
 		this._Tasks = new Tasks();
     this._loadTasks();
     
-   
     var _statusChangedHandler = function(data){
 				var statusText = this.getStatusText(data.status);
 				this._server.eventSender.sendagentlog({"level": "info", "message": statusText});
@@ -20,7 +19,6 @@ var WindowsServiceUnit = function(server, name) {
 		};
 	
 		this.on('statusChanged', _statusChangedHandler);
-    
 };
 
 //Add properties that should overide deployunit after this row
