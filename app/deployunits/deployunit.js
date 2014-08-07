@@ -3,7 +3,7 @@ var events = require('events');
 var util = require('util');
 Models = require('../models');
 var _deployunitinfo;
-var _server;
+var _app;
 var _unitinfo;
 
 function combineActions(defaultActions, unitActions)
@@ -18,10 +18,10 @@ function combineActions(defaultActions, unitActions)
 	}
 }
 
-function DeployUnit(server, name) {
+function DeployUnit(app, name) {
 	events.EventEmitter.call(this);
-	this._config = server.config;
-  this._server = server;
+	this._config = app.config;
+  this._app = app;
   this._name = name;
 	this._deployunitinfo = new Models.deployunitinfodto();
 	this._actions = {};
@@ -60,7 +60,7 @@ DeployUnit.prototype.getDeployUnitInfo = function(callback) {
 	if(this._requriredPlatform !== process.platform || !this._hasStatus) return (callback(unitInfoDTO));
 
 	var command = {
-			server: this._server,
+			app: this._app,
 			serviceName: this._serviceName,
 			actionName: "Status"
 	};
@@ -88,7 +88,7 @@ DeployUnit.prototype.executeAction = function(params) {
 	{
 		action =  this._actions[paramsAction];
 		params.serviceName = this._serviceName;
-		params.server = this._server;
+		params.app = this._app;
 		params.unitName = this._name;
 		action(params);
 	}
@@ -102,7 +102,7 @@ DeployUnit.prototype.executeAction = function(params) {
 				action =  this._actions[customAction.type.toLowerCase()];
 				customAction.actionName = paramsAction;
 				customAction.unitName = this._name;
-				customAction.server = this._server;
+				customAction.app = this._app;
 				action(customAction);
 			}
 		}

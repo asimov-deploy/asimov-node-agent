@@ -3,19 +3,19 @@ var _ = require('underscore');
 var deployunit = require("./deployunit");
 var unitStatusChangedEvent = require('../events/unitstatuschangedevent');
 
-var WindowsServiceUnit = function(server, name) {
-    WindowsServiceUnit.super_.call(this,server, name); // call deployunit's constructor
+var WindowsServiceUnit = function(app, name) {
+    WindowsServiceUnit.super_.call(this,app, name); // call deployunit's constructor
     this.defaultActions = ["Start", "Stop"];
     this._requriredPlatform ="win32";
-    var Tasks =	server.tasks.windowsservicetasks;
+    var Tasks =	app.tasks.windowsservicetasks;
 		this._Tasks = new Tasks();
     this._loadTasks();
     
     var _statusChangedHandler = function(data){
 				var statusText = this.getStatusText(data.status);
-				this._server.eventSender.sendagentlog({"level": "info", "message": statusText});
+				this._app.eventSender.sendagentlog({"level": "info", "message": statusText});
 				var evt = new unitStatusChangedEvent(this._name, statusText);
-				this._server.eventSender.sendEvent(evt);
+				this._app.eventSender.sendEvent(evt);
 		};
 	
 		this.on('statusChanged', _statusChangedHandler);

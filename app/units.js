@@ -1,4 +1,4 @@
-module.exports = function(server, config) {
+module.exports = function(app, config) {
 	var deployUnits = [ {
 		name: 'Website',
 		version: '1.0.0',
@@ -21,7 +21,7 @@ module.exports = function(server, config) {
 	}
 ]
 
-	server.get('/units/list', function(req, res) {
+	app.get('/units/list', function(req, res) {
 		var deployUnits= [];
 
 		var onComplete = function() {
@@ -35,8 +35,8 @@ module.exports = function(server, config) {
 		} 
 		else {
 			config.units.forEach(function(unit, index) {
-				var currentUnit = server.deployUnits.getUnitByName(unit.type);
-				currentUnit = new currentUnit(server,unit.name);
+				var currentUnit = app.deployUnits.getUnitByName(unit.type);
+				currentUnit = new currentUnit(app,unit.name);
 				var deployunitInfo =  currentUnit.getDeployUnitInfo(function(result) {
 					
 					deployUnits.push(result);
@@ -49,8 +49,8 @@ module.exports = function(server, config) {
 		}			
 	});
 
-	server.get('/units/deploy-parameters/:unitName', function(req, res) {
-		var params = server.config.getDeployParameters(req.params.unitName);
+	app.get('/units/deploy-parameters/:unitName', function(req, res) {
+		var params = app.config.getDeployParameters(req.params.unitName);
 		res.json(params);
 	});
 

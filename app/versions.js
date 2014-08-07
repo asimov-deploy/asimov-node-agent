@@ -29,23 +29,23 @@ var versions = [
 	}
 ];
 
-module.exports = function(server) {
-	server.get('/versions/:unit', function(req, res) {
+module.exports = function(app) {
+	app.get('/versions/:unit', function(req, res) {
 		client.get('/' + req.params.unit + '/', function(err, request, response, data) {
 			var packages = packageParser(data)
 			res.json(versions)
 		})
 	});
 
-	server.post('/deploy/deploy', function(req, res) {
+	app.post('/deploy/deploy', function(req, res) {
 		res.json("ok");
 
-			var unitType = server.config.getUnitType(req.params.unitName).toLowerCase();
-			var deployunit = new server.deployUnits[unitType](server,req.params.unitName);	
+			var unitType = app.config.getUnitType(req.params.unitName).toLowerCase();
+			var deployunit = new app.deployUnits[unitType](app,req.params.unitName);	
 			req.params.actionName = "deploy";
 			deployunit.executeAction(req.params);
 
-		server.eventsender.sendEvent({
+		app.eventsender.sendEvent({
 			eventName: "deployStarted",
 			unitName: "Progressive.NET",
 			version: "100.0.0.1",

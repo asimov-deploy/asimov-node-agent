@@ -17,7 +17,7 @@ var LinuxProcessTasks = function() {
 		console.log("Start task : " + command.actionName);
 		this.emit("statusChanged", {'name':	command.unitName, 'status': 'Starting'});
 		var commandToExecute = util.format('service %s status | grep "not running" |  if [ $(wc -c) -gt "0" ]; then service %s start; fi; service --status-all | grep %s 2>&1 | grep  -Po "[\\+\\-\\?]"', command.serviceName, command.serviceName, command.serviceName);
-		commandExecutor.executeShellCommand(commandToExecute,command.server, function(status){
+		commandExecutor.executeShellCommand(commandToExecute,command.app, function(status){
 				console.log(status);
 				this.emit("statusChanged", {'name':	command.unitName, 'status': status});
 		}.bind(this))};	
@@ -26,7 +26,7 @@ var LinuxProcessTasks = function() {
 		console.log("Stop task : " + command.actionName);
 		this.emit("statusChanged", {'name':	command.unitName, 'status': 'Stopping'});
 		var commandToExecute = util.format('service %s stop; service --status-all | grep %s 2>&1 | grep  -Po "[\\+\\-\\?]"', command.serviceName, command.serviceName);
-		commandExecutor.executeShellCommand(commandToExecute,command.server, function(status){
+		commandExecutor.executeShellCommand(commandToExecute,command.app, function(status){
 				console.log(status);
 				this.emit("statusChanged", {'name':	command.unitName, 'status': status});
 		}.bind(this))};	
@@ -34,19 +34,19 @@ var LinuxProcessTasks = function() {
   LinuxProcessTasks.prototype.status =  function (command, callback) {
 		console.log("Start task : " + command.actionName);
 		var commandToExecute = util.format('service --status-all | grep %s 2>&1 | grep  -Po "[\\+\\-\\?]"', command.serviceName);
-		commandExecutor.executeShellCommand(commandToExecute,command.server, callback);
+		commandExecutor.executeShellCommand(commandToExecute,command.app, callback);
 	};
 
 	LinuxProcessTasks.prototype.command =  function (command) {
 		console.log("Execute task : " + command.actionName);
 		var commandToExecute = command.command;
-		commandExecutor.executeShellCommand(commandToExecute,command.server);
+		commandExecutor.executeShellCommand(commandToExecute,command.app);
 	};
 
 	LinuxProcessTasks.prototype.longrunningcommand =  function (command) {
 		console.log("Execute task : " + command.actionName);
 		var commandToExecute = command.command;
-		commandExecutor.executeLongRunningShellCommand(commandToExecute,command.server);
+		commandExecutor.executeLongRunningShellCommand(commandToExecute,command.app);
 	};
 
 module.exports =  LinuxProcessTasks;

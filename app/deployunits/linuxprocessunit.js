@@ -3,19 +3,19 @@ var _ = require('underscore');
 var deployunit = require("./deployunit");
 var unitStatusChangedEvent = require('../events/unitstatuschangedevent');
 
-var LinuxProcessUnit = function(server, name) {
-    LinuxProcessUnit.super_.call(this,server, name); // call deployunit's constructor
+var LinuxProcessUnit = function(app, name) {
+    LinuxProcessUnit.super_.call(this,app, name); // call deployunit's constructor
     this._requriredPlatform ="linux";
     this.defaultActions = ["Start", "Stop"];
-    var Tasks =	server.tasks.linuxprocesstasks;
+    var Tasks =	app.tasks.linuxprocesstasks;
 		this._Tasks = new Tasks();
-    this._loadTasks(server);
+    this._loadTasks(app);
 
 		var _statusChangedHandler = function(data){
 				var statusText = this.getStatusText(data.status);
-				this._server.eventSender.sendagentlog({"level": "info", "message": statusText});
+				this._app.eventSender.sendagentlog({"level": "info", "message": statusText});
 				var evt = new unitStatusChangedEvent(this._name, statusText);
-				this._server.eventSender.sendEvent(evt);
+				this._app.eventSender.sendEvent(evt);
 		};
 	
 		this.on('statusChanged', _statusChangedHandler);

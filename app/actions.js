@@ -1,10 +1,10 @@
 var restify = require('restify');
-module.exports = function(server) {
-	server.post('/action/{name}', function(req, res, err) {
+module.exports = function(app) {
+	app.post('/action/{name}', function(req, res, err) {
 		res.send({ status: 'ok' })
 	})
 
-	server.post('/action', function(req, res) {
+	app.post('/action', function(req, res) {
 
 		if (req.params.actionName === undefined) {
 			console.log("No action specified!")
@@ -12,14 +12,14 @@ module.exports = function(server) {
 
 		try
 		{
-			var unitType = server.config.getUnitType(req.params.unitName).toLowerCase();
-			var deployunit = new server.deployUnits[unitType](server,req.params.unitName);	
+			var unitType = app.config.getUnitType(req.params.unitName).toLowerCase();
+			var deployunit = new app.deployUnits[unitType](app,req.params.unitName);	
 			deployunit.executeAction(req.params);
 
-			server.eventSender.sendagentlog({
+			app.eventSender.sendagentlog({
 			eventName: req.body.actionName,
 			unitName: req.params.unitName,
-			agentName: server.agentname,
+			agentName: app.agentname,
 			level: "info",
 			version: "100.0.0.1",
 			branch: "uber",

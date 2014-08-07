@@ -1,52 +1,46 @@
-var sys = require('sys');
-var exec = require('child_process').exec;
-var util = require('util');
-var shell = require('shelljs');
-var events = require('events');
+
 var unitStatusChangedEvent = require('../events/unitstatuschangedevent');
-var CommandExecutor =  require('../commandexecutor').CommandExecutor;
-var commandExecutor =  new CommandExecutor();
 
-var LinuxUpstartTasks = function() {
-		events.EventEmitter.call(this);
-};
-	LinuxUpstartTasks.prototype.__proto__ = events.EventEmitter.prototype;
+module.exports =  function (obj){
 
-	LinuxUpstartTasks.prototype.start =  function (command) {
+	obj.start =  function (command) {
 		console.log("Start task : " + command.actionName);
-		this.emit("statusChanged", {'name':	command.unitName, 'status': 'Starting'});
+		this._eventEmitter.emit("statusChanged", {'name':	command.unitName, 'status': 'Starting'});
 		var commandToExecute = util.format('start %s ; status %s 2>&1', command.serviceName, command.serviceName);
-		commandExecutor.executeShellCommand(commandToExecute,command.server, function(status){
+		this.executeShellCommand(commandToExecute,command.app, function(status){
 				console.log(status);
-				this.emit("statusChanged", {'name':	command.unitName, 'status': status});
-		}.bind(this))};	
+				this._eventEmitter.emit("statusChanged", {'name':	command.unitName, 'status': status});
+		}.bind(this))
+	};	
 
-	LinuxUpstartTasks.prototype.stop =  function (command) {
+	obj.stop =  function (command) {
 		console.log("Stop task : " + command.actionName);
-		this.emit("statusChanged", {'name':	command.unitName, 'status': 'Stopping'});
+		this._eventEmitter.emit("statusChanged", {'name':	command.unitName, 'status': 'Stopping'});
 		var commandToExecute = util.format('stop %s ; status %s 2>&1', command.serviceName, command.serviceName);
-		commandExecutor.executeShellCommand(commandToExecute,command.server, function(status){
+		this.executeShellCommand(commandToExecute,command.app, function(status){
 				console.log(status);
-				this.emit("statusChanged", {'name':	command.unitName, 'status': status});
-		}.bind(this))};	
+				this._eventEmitter.emit("statusChanged", {'name':	command.unitName, 'status': status});
+		}.bind(this))
+	};	
 	
-  LinuxUpstartTasks.prototype.status =  function (command, callback) {
+  obj.status =  function (command, callback) {
 		console.log("Status task : " + command.actionName);
 		var commandToExecute = util.format('status %s  2>&1 ', command.serviceName);
-		commandExecutor.executeShellCommand(commandToExecute,command.server, callback);
+		this.executeShellCommand(commandToExecute,command.app, callback);
 	};
 
-	LinuxUpstartTasks.prototype.restart =  function (command) {
+	obj.restart =  function (command) {
 	console.log("Restart task : " + command.actionName);
-	this.emit("statusChanged", {'name':	command.unitName, 'status': 'Stopping'});
+	this._eventEmitter.emit("statusChanged", {'name':	command.unitName, 'status': 'Stopping'});
 	var commandToExecute = util.format('restart %s ; status %s ', command.serviceName, command.serviceName);
-	commandExecutor.executeShellCommand(commandToExecute,command.server, function(status){
+	this.executeShellCommand(commandToExecute,command.app, function(status){
 			console.log(status);
-			this.emit("statusChanged", {'name':	command.unitName, 'status': status});
-	}.bind(this))};	
-
-
-module.exports =  LinuxUpstartTasks;
+			this._eventEmitter.emit("statusChanged", {'name':	command.unitName, 'status': status});
+		}.bind(this))
+	};	
+	
+	return obj;
+}
 
 
 

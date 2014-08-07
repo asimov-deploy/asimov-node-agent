@@ -15,7 +15,7 @@ var commandExecutor =  new CommandExecutor();
 		console.log("Start windows service : " + command.unitName);
 		this.emit("statusChanged", {'name':	command.unitName, 'status': 'Starting'});
 		var commandToExecute = 'powershell.exe -Command "(get-service -Name "' + command.serviceName + '"  -ErrorAction SilentlyContinue ).Start();  write-host (get-service -Name "' + command.serviceName + '" ).Status "';
-		commandExecutor.executePSCommand(commandToExecute,command.server, function(status){
+		commandExecutor.executePSCommand(commandToExecute,command.app, function(status){
 				console.log(status);
 				this.emit("statusChanged", {'name':	command.unitName, 'status': status});
 		}.bind(this));	
@@ -25,7 +25,7 @@ var commandExecutor =  new CommandExecutor();
 		console.log("Stop windows service : " + command.unitName);
 		this.emit("statusChanged", {'name':	command.unitName, 'status': 'Stopping'});
 		var commandToExecute = 'powershell.exe -Command (get-service -Name ' + command.serviceName + '  -ErrorAction SilentlyContinue ).Stop(); write-host (get-service -Name "' + command.serviceName + '" ).Status ';
-		commandExecutor.executePSCommand(commandToExecute,command.server, function(status){
+		commandExecutor.executePSCommand(commandToExecute,command.app, function(status){
 				this.emit("statusChanged", {'name':	command.unitName, 'status': status});
 				console.log(status);
 		}.bind(this));
@@ -36,7 +36,7 @@ var commandExecutor =  new CommandExecutor();
 		var commandToExecute = 'powershell.exe -Command "if((get-service -Name ' + command.serviceName + ' -ErrorAction SilentlyContinue )){ write-host (get-service -Name "' + command.serviceName + '").Status } else{ Write-host \"NA\" }"';
 		try
 		{
-			commandExecutor.executePSCommand(commandToExecute,command.server, callback );
+			commandExecutor.executePSCommand(commandToExecute,command.app, callback );
 		}
 		catch (e)
 		{
@@ -53,7 +53,7 @@ var commandExecutor =  new CommandExecutor();
 	WindowsServiceTasks.prototype.command = function(command) {
 		console.log("Execute command : " + command.actionName + " - " + command.unitName);
 		var commandToExecute = util.format('powershell.exe -Command %s', command.command);
-		commandExecutor.executePSCommand(commandToExecute,command.server);
+		commandExecutor.executePSCommand(commandToExecute,command.app);
 	};
 
 module.exports =  WindowsServiceTasks;
