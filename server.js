@@ -45,7 +45,7 @@ app.eventSender = new objSender(config.nodefronturl, config.webcontrolurl, confi
 
 setInterval(function() {
 	app.eventSender.sendHeartBeat();
-}, 500);
+}, 2000);
 
 
 setInterval(function() {

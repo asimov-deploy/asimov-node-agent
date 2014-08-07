@@ -23,7 +23,6 @@ var _apiKey;
 			configVersion: '0.0.1',
 			loadbalancerid: 5
 		};
-
 		this._nodeFront.post('/agent/heartbeat', heartbeatData, function() {});
 	};
 

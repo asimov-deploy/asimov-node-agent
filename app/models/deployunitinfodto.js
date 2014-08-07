@@ -6,6 +6,9 @@ var DeployUnitInfoDTO = function(){
 	this.status =  "NA";
 	this.lastDeployed = "";
 	this.hasDeployParameters = false;
+	this.agent = {};
+	this.agent.loadBalancerState = {};
+	this.agent.loadBalancerState.enabled = false;
 	this.actions = [];
 };
 module.exports = DeployUnitInfoDTO;
