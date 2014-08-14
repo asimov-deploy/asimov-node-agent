@@ -25,7 +25,10 @@ CommandExecutor.prototype.executeLongRunningShellCommand = function (commandToEx
 	var child = exec(commandToExecute, {async:true});
 	child.stdout.on('data', function(data) {
 	console.log("standard Data: " + data);
-				message.message = data;
+	var message = {
+				level: "info",
+				message: data
+				};
 				app.eventSender.sendagentlog(message);
 	});	
 }

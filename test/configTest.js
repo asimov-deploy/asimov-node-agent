@@ -37,5 +37,6 @@ describe('Config', function() {
 				assert.equal("Demo",config.agentgroup);
 				assert.equal("adssaer32t24f23423",config.apikey);
 			});
+
 	});
 });
