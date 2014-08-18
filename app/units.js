@@ -25,6 +25,7 @@ module.exports = function(app, config) {
 		var deployUnits= [];
 
 		var onComplete = function() {
+			//console.log(JSON.stringify(deployUnits));
 			res.json(deployUnits); 
 		};
 

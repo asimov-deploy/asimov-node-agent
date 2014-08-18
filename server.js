@@ -43,15 +43,18 @@ app.get('/', function(req, res, err) {
 var objSender = require('./app/eventSender.js');
 app.eventSender = new objSender(config.nodefronturl, config.webcontrolurl, config.agentname, config.agentgroup, config.apikey);
 
-setInterval(function() {
-	app.eventSender.sendHeartBeat();
-}, 2000);
+if (app.config["enable-demo"] === true ){
+	setInterval(function() {
+		app.eventSender.sendlog();
+	}, app.config.heartbeatintervalseconds * 3000);
+}
 
 
 setInterval(function() {
 	app.eventSender.sendHeartBeat();
-	app.eventSender.sendlog();
-}, 10000);
+}, app.config.heartbeatintervalseconds * 1000);
+
+
 
 console.log('Node agent running on: ' + app.config.port)
 

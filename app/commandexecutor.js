@@ -26,7 +26,7 @@ CommandExecutor.prototype.executeLongRunningShellCommand = function (commandToEx
 	child.stdout.on('data', function(data) {
 	console.log("standard Data: " + data);
 	var message = {
-				level: "info",
+				level: "debug",
 				message: data
 				};
 				app.eventSender.sendagentlog(message);

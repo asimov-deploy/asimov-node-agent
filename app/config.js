@@ -70,26 +70,6 @@ Object.keys(configlowerkeys).forEach(function(key) {
 	}.bind(this)); 
 };
 
-Config.prototype._fqdnlookup = function(callback) {
-	var ip ="";
-	if(os.platform() === "linux"){
-		ip = os.networkInterfaces().eth0[0].address.toString();
-	}
-	else{
-		ip = os.networkInterfaces().Ethernet[0].address.toString() ;		
-	}
-	this.ip = ip;
-	dns.reverse(ip, callback.bind(this));
-}
-
-
-Config.prototype._dnsReversCallback = function (err,domains) {
-	if (err) throw err;
-
-	this.fqdn =  domains.toString();
-
-	if (this["enable-demo"] !== true ) this.webcontrolurl = "http://" + this.ip + ":" + this.port;
-}
 
 Config.prototype.getAgent = function() {
 	var hostname = os.hostname();
@@ -121,7 +101,26 @@ Config.prototype.getUnitActions = function(name) {
 
 
 Config.prototype._setWebControlUrl = function() {
+
+	var ip ="";
+	
+	if (this["enable-demo"] === true ){
 			this.webcontrolurl = "http://localhost:" + this.port;
+			return;
+	}
+
+	if(os.platform() === "linux") {
+		var defaultNetworkInterface = "eth0";
+
+		if(this["defaultnetworkinterface"] !== undefined) defaultNetworkInterface = this["defaultnetworkinterface"];
+
+		ip = os.networkInterfaces()[defaultNetworkInterface][0].address.toString();
+	}
+	else{
+		ip = os.networkInterfaces().Ethernet[0].address.toString() ;		
+	}
+	this.ip = ip;
+	this.webcontrolurl = "http://" + this.ip + ":" + this.port;	
 	};
 
 Config.prototype.getDeployParameters = function(name) {
@@ -168,7 +167,6 @@ Config.prototype._loadConfigFromFile = function(configOverrides) {
 	
 	this._setWebControlUrl();	
  
-	this._fqdnlookup(this._dnsReversCallback);
 
 	this.agent = this.getAgent.bind(this)();
 	this.agentname = this.agent.name;
