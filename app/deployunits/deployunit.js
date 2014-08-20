@@ -6,9 +6,10 @@ var _deployunitinfo;
 var _app;
 var _unitinfo;
 
-function combineActions(defaultActions, unitActions)
+function combineActions(defaultActions, unitActions, excludeDefaultActions)
 {
 		if (typeof defaultActions != 'undefined'){
+			defaultActions =  _.difference(defaultActions, excludeDefaultActions); 
 			if(unitActions.length === 0 ) {
 				return defaultActions;
 			} 
@@ -55,7 +56,7 @@ DeployUnit.prototype.getDeployUnitInfo = function(callback) {
 			unitInfoDTO.hasDeployParameters = true;
 	}
 
-	unitInfoDTO.actions = combineActions(this.defaultActions, unitInfoDTO.actions );
+	unitInfoDTO.actions = combineActions(this.defaultActions, unitInfoDTO.actions, unitInfo.excludedefaultactions);
 	
 	if(this._requriredPlatform !== process.platform || !this._hasStatus) return (callback(unitInfoDTO));
 

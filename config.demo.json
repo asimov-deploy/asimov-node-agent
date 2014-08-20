@@ -3,7 +3,7 @@
   "NodeFrontUrl": "http://localhost:3333",
 
   "units": [
-      {
+     {
          "name": "RabbitMQ",
          "type": "WindowsService",
          "servicename": "RabbitMQ",
@@ -55,10 +55,11 @@
             }
           }
     },
-    { 
+   { 
       "name": "Asimov agent",
       "type":"LinuxUpstart",
-      "ProcessName": "asimovagent"
+      "ProcessName": "asimovagent",
+      "excludedefaultactions": ["Deploy", "Start", "Stop"]
     }  
   ]
 }
