@@ -15,7 +15,8 @@ CommandExecutor.prototype.executePSCommand = function(commandToExecute,app, call
 
 CommandExecutor.prototype.executeShellCommand = function (commandToExecute,app, callback) {
 	console.log(commandToExecute);
-	var child = exec(commandToExecute, function (error, stdout, stderr) {
+	var child = exec(commandToExecute, function (err, stdout, stderr) {
+		if(err) console.log(err +  stderr);
 		if (typeof(callback) == "function") callback(stdout);
 	})
 }

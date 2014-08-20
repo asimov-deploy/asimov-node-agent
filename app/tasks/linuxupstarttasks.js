@@ -1,5 +1,5 @@
+var util = require('util');
 var events = require('events');
-var unitStatusChangedEvent = require('../events/unitstatuschangedevent');
 var unitStatusChangedEvent = require('../events/unitstatuschangedevent');
 var CommandExecutor =  require('../commandexecutor').CommandExecutor;
 var commandExecutor =  new CommandExecutor();
@@ -34,7 +34,20 @@ var LinuxUpstartTasks = function() {
   LinuxUpstartTasks.prototype.status =  function (command, callback) {
 		console.log("Status task : " + command.actionName);
 		var commandToExecute = util.format('status %s  2>&1 ', command.serviceName);
-		commandExecutor.executeShellCommand(commandToExecute,command.app, callback);
+		try
+		{
+			commandExecutor.executeShellCommand(commandToExecute,command.app, callback );
+		}
+		catch (e)
+		{
+			console.log(e);
+		}
+	};
+
+	LinuxUpstartTasks.prototype.command =  function (command) {
+		console.log("Execute task : " + command.actionName);
+		var commandToExecute = command.command;
+		commandExecutor.executeShellCommand(commandToExecute,command.app);
 	};
 
 	LinuxUpstartTasks.prototype.restart =  function (command) {

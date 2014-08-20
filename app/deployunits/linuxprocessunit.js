@@ -2,14 +2,14 @@ var util = require('util');
 var _ = require('underscore');
 var deployunit = require("./deployunit");
 var unitStatusChangedEvent = require('../events/unitstatuschangedevent');
-var Tasks = require('../tasks/linuxprocesstasks');
 
 var LinuxProcessUnit = function(app, name) {
     LinuxProcessUnit.super_.call(this,app, name); // call deployunit's constructor
     this._requriredPlatform ="linux";
     this.defaultActions = ["Start", "Stop"];   
+		var Tasks =	app.tasks.linuxprocesstasks;
 		this._Tasks = new Tasks();
-    this._loadTasks(app);
+    this._loadTasks();
 
 		var _statusChangedHandler = function(data){
 				var statusText = this.getStatusText(data.status);

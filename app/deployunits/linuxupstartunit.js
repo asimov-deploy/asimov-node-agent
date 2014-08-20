@@ -2,12 +2,12 @@ var util = require('util');
 var _ = require('underscore');
 var deployunit = require("./deployunit");
 var unitStatusChangedEvent = require('../events/unitstatuschangedevent');
-var Tasks = require('../tasks/linuxupstarttasks');
 	
 var LinuxUpstartUnit = function(app, name) {
     LinuxUpstartUnit.super_.call(this,app, name); // call deployunit's constructor
     this._requriredPlatform ="linux";
     this.defaultActions = ["Start", "Stop", "Restart"];
+    var Tasks =	app.tasks.linuxupstarttasks;
    	this._Tasks = new Tasks();
     this._loadTasks();
 
@@ -18,12 +18,7 @@ var LinuxUpstartUnit = function(app, name) {
 				this._app.eventSender.sendEvent(evt);
 		};
 
-		var _commandOutputHandler = function(evt){
-				this._app.eventSender.sendagentlog({"level": "info", "message": evt.data});
-		};
-	
 		this.on('statusChanged', _statusChangedHandler);
-		this.on("commandOutput",_commandOutputHandler);	
 };
 //Add properties that should overide deployunit after this row
 util.inherits(LinuxUpstartUnit, deployunit);

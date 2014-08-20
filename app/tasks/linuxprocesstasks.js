@@ -1,7 +1,4 @@
-var sys = require('sys');
-var exec = require('child_process').exec;
 var util = require('util');
-var shell = require('shelljs');
 var events = require('events');
 var unitStatusChangedEvent = require('../events/unitstatuschangedevent');
 var CommandExecutor =  require('../commandexecutor').CommandExecutor;
@@ -34,7 +31,14 @@ var LinuxProcessTasks = function() {
   LinuxProcessTasks.prototype.status =  function (command, callback) {
 		console.log("Start task : " + command.actionName);
 		var commandToExecute = util.format('service --status-all | grep %s 2>&1 | grep  -Po "[\\+\\-\\?]"', command.serviceName);
-		commandExecutor.executeShellCommand(commandToExecute,command.app, callback);
+		try
+		{
+			commandExecutor.executeShellCommand(commandToExecute,command.app, callback );
+		}
+		catch (e)
+		{
+			console.log(e);
+		}
 	};
 
 	LinuxProcessTasks.prototype.command =  function (command) {
